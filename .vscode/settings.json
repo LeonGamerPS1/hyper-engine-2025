@@ -1,0 +1,19 @@
+{
+	"search.exclude": {
+		"export/**/*.*": true
+	},
+	"[haxe]": {
+		"editor.formatOnSave": true,
+		"editor.formatOnSaveMode":"modifications",
+		"editor.formatOnPaste": false,
+		"editor.codeActionsOnSave": {
+			"source.sortImports": "explicit"
+		}
+	},
+	"haxe.enableExtendedIndentation": true,
+	"workbench.colorCustomizations": {
+		"titleBar.activeBackground": "#40583edd",
+		"activityBar.background": "#344c32aa"
+	},
+	"window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}${separator}[Branch: main]"
+}

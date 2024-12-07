@@ -1,0 +1,25 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"name": "untitled mania engine",
+			"path": "/home/a/Schreibtisch/untitled mania engine"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Flixel",
+			"path": "/home/a/haxelib/flixel/5,8,0/"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Flixel Addons",
+			"path": "/home/a/haxelib/flixel-addons/3,2,3/"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Haxe",
+			"path": "/usr/lib/haxe/std"
+		}
+	]
+}
