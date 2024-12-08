@@ -12,8 +12,8 @@
 	},
 	"haxe.enableExtendedIndentation": true,
 	"workbench.colorCustomizations": {
-		"titleBar.activeBackground": "#40583edd",
-		"activityBar.background": "#344c32aa"
+		"titleBar.activeBackground": "#575840dd",
+		"activityBar.background": "#4b4c34aa"
 	},
 	"window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}${separator}[Branch: main]"
 }
