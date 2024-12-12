@@ -88,7 +88,6 @@ class GameNote extends FlxSprite
 
 			updateHitbox();
 
-			
 			offsetX -= width / 2;
 
 			if (prevNote.isSustainNote)
@@ -98,7 +97,6 @@ class GameNote extends FlxSprite
 				prevNote.scale.y *= SongConductor.stepCrochet / 100 * 1.5 * PlayState.song.speed;
 				prevNote.updateHitbox();
 			}
-			
 		}
 	}
 
@@ -150,8 +148,6 @@ class GameNote extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		super.update(elapsed);
-
 		if (mustPress)
 		{
 			// miss on the NEXT frame so lag doesnt make u miss notes
@@ -187,6 +183,7 @@ class GameNote extends FlxSprite
 			if (alpha > 0.3)
 				alpha = 0.3;
 		}
+		super.update(elapsed);
 	}
 
 	public function clipToStrumNote(myStrum:Receptor)
@@ -216,7 +213,7 @@ class GameNote extends FlxSprite
 			clipRect = swagRect;
 		}
 	}
-
+	/*
 	override function set_clipRect(rect:FlxRect)
 	{
 		clipRect = rect;
@@ -226,4 +223,5 @@ class GameNote extends FlxSprite
 
 		return rect;
 	}
+	 */
 }

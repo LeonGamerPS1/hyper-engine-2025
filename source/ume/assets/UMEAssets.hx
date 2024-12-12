@@ -3,6 +3,7 @@ package ume.assets;
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
+import openfl.Assets;
 import openfl.display.BitmapData;
 import openfl.display3D.textures.RectangleTexture;
 import openfl.system.System;
@@ -10,6 +11,11 @@ import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
 
 using StringTools;
+
+#if sys
+import sys.FileSystem;
+import sys.io.File;
+#end
 
 class UMEAssets
 {
@@ -137,16 +143,25 @@ class UMEAssets
 
 	inline static public function xml(key:String, ?library:String)
 	{
-		return getPath('data/$key.xml', TEXT, library);
+		#if MODS_ALLOWED
+		if (FileSystem.exists(modsXml(key)))
+			return File.getContent(modsXml(key));
+		return getPath('images/$key.xml', TEXT, library);
+		#else
+		return getPath('images/$key.xml', TEXT, library);
+		#end
+
 	}
 
 	inline static public function voices(key:String)
 	{
+		key = key.toLowerCase();
 		return 'assets/songs/$key/Voices$sound_ext';
 	}
 
 	inline static public function inst(key:String)
 	{
+		key = key.toLowerCase();
 		return 'assets/songs/$key/Inst$sound_ext';
 	}
 
@@ -157,7 +172,7 @@ class UMEAssets
 
 	static public function sound(key:String, ?library:String)
 	{
-		return getPath('sounds/$key.$sound_ext', SOUND, library);
+		return getPath('sounds/$key$sound_ext', SOUND, library);
 	}
 
 	inline static public function soundRandom(key:String, min:Int, max:Int, ?library:String)
@@ -198,20 +213,46 @@ class UMEAssets
 		#end
 	}
 
-	static public function image(key:String, ?library:String, ?allowGPU:Bool = true)
+	public static function fileExists(key:String, type:AssetType, ?ignoreMods:Bool = false, ?parentFolder:String = null)
 	{
-		#if (desktop && !hl)
-		var bitmap:BitmapData = null;
+		return (Assets.exists(getPath(key, type, parentFolder)));
+	}
+
+	static public function img(key:String, ?library:String):String
+	{
 		var file:String = "";
 
 		file = getPath('images/$key.png', IMAGE, library);
+		return file;
+	}
+
+	static public function image(key:String, ?library:String, ?allowGPU:Bool = true)
+	{
+		#if (!hl && desktop)
+		var bitmap:BitmapData = null;
+		var file:String = null;
+
+		#if MODS_ALLOWED
+		file = modsImages(key);
 		if (currentTrackedAssets.exists(file))
 		{
 			localTrackedAssets.push(file);
-			return currentTrackedAssets[file];
+			return currentTrackedAssets.get(file);
 		}
-		else if (OpenFlAssets.exists(file, IMAGE))
-			bitmap = OpenFlAssets.getBitmapData(file);
+		else if (FileSystem.exists(file))
+			bitmap = BitmapData.fromFile(file);
+		else
+		#end
+		{
+			file = getPath('images/$key.png', IMAGE, library);
+			if (currentTrackedAssets.exists(file))
+			{
+				localTrackedAssets.push(file);
+				return currentTrackedAssets.get(file);
+			}
+			else if (OpenFlAssets.exists(file, IMAGE))
+				bitmap = OpenFlAssets.getBitmapData(file);
+		}
 
 		if (bitmap != null)
 		{
@@ -223,17 +264,66 @@ class UMEAssets
 		trace('oh no its returning null NOOOO ($file)');
 		return null;
 		#else
-		var file:String = "";
-
-		file = getPath('images/$key.png', IMAGE, library);
-		return file;
+		return img(key, library != null ? library : null);
 		#end
 	}
 
 	public static inline function getSparrowAtlas(key:String)
 	{
-		return FlxAtlasFrames.fromSparrow(getPath('images/$key.png', IMAGE), getPath('images/$key.xml', TEXT));
+		return FlxAtlasFrames.fromSparrow(image('$key'), xml('$key'));
 	}
+
+	#if MODS_ALLOWED
+	inline static public function mods(key:String = '')
+	{
+		return 'mods/' + key;
+	}
+
+	inline static public function modsFont(key:String)
+	{
+		return modFolders('fonts/' + key);
+	}
+
+	inline static public function modsJson(key:String)
+	{
+		return modFolders('data/' + key + '.json');
+	}
+
+	inline static public function modsVideo(key:String)
+	{
+		return modFolders('videos/' + key + '.mp4');
+	}
+
+	inline static public function modsSounds(path:String, key:String)
+	{
+		return modFolders(path + '/' + key + '.ogg');
+	}
+
+	inline static public function modsImages(key:String)
+	{
+		return modFolders('images/' + key + '.png');
+	}
+
+	inline static public function modsXml(key:String)
+	{
+		return modFolders('images/' + key + '.xml');
+	}
+
+	inline static public function modsTxt(key:String)
+	{
+		return modFolders('images/' + key + '.txt');
+	}
+
+	inline static public function modsImagesJson(key:String)
+	{
+		return modFolders('images/' + key + '.json');
+	}
+
+	static public function modFolders(key:String)
+	{
+		return mods(key);
+	}
+	#end
 
 	#if sys
 	public static inline function getBytes(path:String):haxe.io.Bytes

@@ -3,6 +3,7 @@ package ume.chart.format.v1;
 import haxe.Json;
 import haxe.format.JsonParser;
 import lime.utils.Assets;
+import sys.FileSystem;
 import ume.assets.UMEAssets;
 
 using StringTools;
@@ -53,41 +54,22 @@ class Song
 
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
-		var rawJson;
-		if (jsonInput == 'events')
-		{ // Makes the game not crash while trying to load an events chart, doesn't work on HTML tho
-			#if sys
-			rawJson = sys.io.File.getContent(UMEAssets.json(folder.toLowerCase() + '/events')).trim();
-			#else
-			rawJson = Assets.getText(UMEAssets.json(folder.toLowerCase() + '/events')).trim();
-			#end
-		}
+		var rawJson:String = new String("");
+
+		#if MODS_ALLOWED
+		if (FileSystem.exists(UMEAssets.modsJson(folder.toLowerCase() + '/' + jsonInput.toLowerCase())))
+			rawJson = sys.io.File.getContent(UMEAssets.modsJson(folder.toLowerCase() + '/' + jsonInput.toLowerCase())).trim();
 		else
-		{
 			rawJson = Assets.getText(UMEAssets.json(folder.toLowerCase() + '/' + jsonInput.toLowerCase())).trim();
-		}
+		#else
+		rawJson = Assets.getText(UMEAssets.json(folder.toLowerCase() + '/' + jsonInput.toLowerCase())).trim();
+		#end
 
 		while (!rawJson.endsWith("}"))
 		{
 			rawJson = rawJson.substr(0, rawJson.length - 1);
 			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
 		}
-
-		// FIX THE CASTING ON WINDOWS/NATIVE
-		// Windows???
-		// trace(songData);
-
-		// trace('LOADED FROM JSON: ' + songData.notes);
-		/* 
-			for (i in 0...songData.notes.length)
-			{
-				trace('LOADED FROM JSON: ' + songData.notes[i].sectionNotes);
-				// songData.notes[i].sectionNotes = songData.notes[i].sectionNotes
-			}
-
-				daNotes = songData.notes;
-				daSong = songData.song;
-				daBpm = songData.bpm; */
 
 		return parseJSONshit(rawJson);
 	}

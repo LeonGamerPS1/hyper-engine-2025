@@ -749,6 +749,7 @@ class Controls extends FlxActionSet
 		}
 	}
 
+
 	public function fromSaveData(data:Dynamic, device:Device)
 	{
 		for (control in Control.createAll())
