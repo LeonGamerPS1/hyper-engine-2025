@@ -3,9 +3,9 @@ package ume.objects;
 import flixel.FlxSprite;
 import flixel.util.FlxTimer;
 import ume.assets.UMEAssets;
+import ume.game.PlayState;
 
-class Receptor extends FlxSprite
-{
+class Receptor extends FlxSprite {
 	public var dataNote:Int;
 	public var direction:Float = 90;
 	public var downScroll:Bool = false;
@@ -23,20 +23,14 @@ class Receptor extends FlxSprite
 	public var holdCoverEnd:FlxSprite;
 	public var holdCover:FlxSprite;
 
-	public function new(id:Int)
-	{
+	public function new(id:Int) {
 		super();
 		antialiasing = true;
-		frames = UMEAssets.getSparrowAtlas('NOTE_assets');
+
 		ID = id;
 		dataNote = id;
-		setGraphicSize(width * 0.7);
-		updateHitbox();
+		loadSkinAndVariant();
 
-		animation.addByPrefix('static', 'arrow${receptorNim[id % receptorNim.length]}', 24, false);
-		animation.addByPrefix('press', '${receptorNim[id % receptorNim.length].toLowerCase()} press', 24, false);
-		animation.addByPrefix('confirm', '${receptorNim[id % receptorNim.length].toLowerCase()} confirm', 24, false);
-		playAnim('static');
 		holdCover = new FlxSprite(x, y);
 		holdCoverEnd = new FlxSprite(x, y);
 
@@ -44,33 +38,45 @@ class Receptor extends FlxSprite
 		holdCoverEnd.visible = false;
 	}
 
-	public function splashfuck()
-	{
+	public function loadSkinAndVariant(skin:String = "arrow", ?variant:String) {
+		variant ??= "normal";
+		if (skin == "")
+			skin = "arrow";
+		if (PlayState.noteVariant != "")
+			variant = PlayState.noteVariant;
+
+		var tex = UMEAssets.getSparrowAtlas('notes/$variant/$skin') != null ? UMEAssets.getSparrowAtlas('notes/$variant/$skin') : UMEAssets.getSparrowAtlas('notes/normal/arrow');
+		frames = tex;
+
+		animation.addByPrefix('static', 'arrow${receptorNim[dataNote % receptorNim.length]}', 24, false);
+		animation.addByPrefix('press', '${receptorNim[dataNote % receptorNim.length].toLowerCase()} press', 24, false);
+		animation.addByPrefix('confirm', '${receptorNim[dataNote % receptorNim.length].toLowerCase()} confirm', 24, false);
+		playAnim('static');
+		setGraphicSize(width * 0.7);
+		updateHitbox();
+	}
+
+	public function splashfuck() {
 		holdCoverEnd.visible = true;
 
 		holdCoverEnd.visible = false;
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		holdCover.setPosition(x, y);
 		holdCoverEnd.setPosition(x, y);
 
-		if (resetAnim > 0)
-		{
+		if (resetAnim > 0) {
 			resetAnim -= elapsed;
-			if (resetAnim <= 0)
-			{
+			if (resetAnim <= 0) {
 				playAnim('static');
 				resetAnim = 0;
 			}
 		}
-		if (holdTimer > 0)
-		{
+		if (holdTimer > 0) {
 			holdTimer -= elapsed;
 			holdCover.visible = true;
-			if (holdTimer <= 0)
-			{
+			if (holdTimer <= 0) {
 				holdCover.visible = false;
 				splashfuck();
 				holdTimer = 0;
@@ -79,12 +85,10 @@ class Receptor extends FlxSprite
 		super.update(elapsed);
 	}
 
-	public function playAnim(Anim, Force = false, Reversed = false, Frame:Int = 0)
-	{
+	public function playAnim(Anim, Force = false, Reversed = false, Frame:Int = 0) {
 		animation.play(Anim, Force, Reversed, Frame);
 
-		if (animation.curAnim != null)
-		{
+		if (animation.curAnim != null) {
 			centerOffsets();
 			centerOrigin();
 		}

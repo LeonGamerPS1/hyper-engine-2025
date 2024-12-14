@@ -32,9 +32,11 @@
 	<set name="BUILD_DIR" value="export/release_builds" if="release" />
 	<set name="BUILD_DIR" value="export/debug_builds" if="debug" />
 
-	<haxedef name="MODS_ALLOWED " if="desktop" unless="hl" />
+	<haxedef name="MODS_ALLOWED " if="desktop" unless="hl html5" />
+
 
 	<source path="source" />
+	<assets path="hdll"  rename="" if="windows hl" />
 	<assets path="assets/data" />
 	<assets path="assets/images" />
 	<assets path="assets/music" />
@@ -51,6 +53,7 @@
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
+	<haxelib name="flxanimate" />
 
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />

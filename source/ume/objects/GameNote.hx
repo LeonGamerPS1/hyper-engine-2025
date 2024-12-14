@@ -6,8 +6,7 @@ import ume.assets.UMEAssets;
 import ume.backend.SongConductor;
 import ume.game.PlayState;
 
-class GameNote extends FlxSprite
-{
+class GameNote extends FlxSprite {
 	public var dataNote:Int;
 	public var hitTime:Float = 0;
 
@@ -50,14 +49,12 @@ class GameNote extends FlxSprite
 
 	public var prevNote:GameNote;
 
-	private function set_multSpeed(value:Float):Float
-	{
+	private function set_multSpeed(value:Float):Float {
 		multSpeed = value;
 		return value;
 	}
 
-	public function new(hitTime:Float = 0.0, dataNote:Int = 0, isSustainNote:Bool = false, ?prevNote:GameNote)
-	{
+	public function new(hitTime:Float = 0.0, dataNote:Int = 0, isSustainNote:Bool = false, ?prevNote:GameNote) {
 		super();
 
 		this.dataNote = dataNote;
@@ -66,7 +63,32 @@ class GameNote extends FlxSprite
 		this.prevNote = prevNote;
 
 		antialiasing = true;
-		frames = UMEAssets.getSparrowAtlas('NOTE_assets');
+		loadSkinAndVarient();
+
+		if (isSustainNote && prevNote != null) {
+			multAlpha = 0.6;
+			offsetX += width / 2;
+			animation.play('holdend');
+			updateHitbox();
+			offsetX -= width / 2;
+
+			if (prevNote.isSustainNote) {
+				prevNote.animation.play('holdpiece');
+
+				prevNote.scale.y *= SongConductor.stepCrochet / 100 * 1.5 * PlayState.song.speed;
+				prevNote.updateHitbox();
+			}
+		}
+	}
+
+	function loadSkinAndVarient(skin:String = "arrow", ?variant:String) {
+		variant ??= "normal";
+		if (skin == "")
+			skin = "arrow";
+		if (PlayState.noteVariant != "")
+			variant = PlayState.noteVariant;
+		var tex = UMEAssets.getSparrowAtlas('notes/$variant/$skin') != null ? UMEAssets.getSparrowAtlas('notes/$variant/$skin') : UMEAssets.getSparrowAtlas('notes/normal/arrow');
+		frames = tex;
 
 		y += 2000; // offscreen
 
@@ -77,31 +99,9 @@ class GameNote extends FlxSprite
 		animation.addByPrefix('holdend', seyCol[dataNote % seyCol.length] + " end");
 		animation.addByPrefix('holdpiece', seyCol[dataNote % seyCol.length] + " piece");
 		playAnim('arrow');
-
-		if (isSustainNote && prevNote != null)
-		{
-			multAlpha = 0.6;
-
-			offsetX += width / 2;
-
-			animation.play('holdend');
-
-			updateHitbox();
-
-			offsetX -= width / 2;
-
-			if (prevNote.isSustainNote)
-			{
-				prevNote.animation.play('holdpiece');
-
-				prevNote.scale.y *= SongConductor.stepCrochet / 100 * 1.5 * PlayState.song.speed;
-				prevNote.updateHitbox();
-			}
-		}
 	}
 
-	public function followStrumNote(myStrum:Receptor, fakeCrochet:Float, songSpeed:Float = 1)
-	{
+	public function followStrumNote(myStrum:Receptor, fakeCrochet:Float, songSpeed:Float = 1) {
 		var strumX:Float = myStrum.x;
 		var strumY:Float = myStrum.y;
 		var strumAngle:Float = myStrum.angle;
@@ -125,87 +125,66 @@ class GameNote extends FlxSprite
 		if (copyX)
 			x = strumX + offsetX + Math.cos(angleDir) * distance;
 
-		if (copyY)
-		{
+		if (copyY) {
 			y = strumY + offsetY + 0 + Math.sin(angleDir) * distance;
-			if (myStrum.downScroll && isSustainNote)
-			{
+			if (myStrum.downScroll && isSustainNote) {
 				y -= (frameHeight * scale.y) - (swagWidth / 2);
 			}
 		}
 	}
 
-	public function playAnim(Anim, Force = false, Reversed = false, Frame:Int = 0)
-	{
+	public function playAnim(Anim, Force = false, Reversed = false, Frame:Int = 0) {
 		animation.play(Anim, Force, Reversed, Frame);
 
-		if (animation.curAnim != null)
-		{
+		if (animation.curAnim != null) {
 			centerOffsets();
 			centerOrigin();
 		}
 	}
 
-	override function update(elapsed:Float)
-	{
-		if (mustPress)
-		{
+	override function update(elapsed:Float) {
+		if (mustPress) {
 			// miss on the NEXT frame so lag doesnt make u miss notes
-			if (willMiss && !wasGoodHit)
-			{
+			if (willMiss && !wasGoodHit) {
 				tooLate = true;
 				canBeHit = false;
-			}
-			else
-			{
-				if (hitTime > SongConductor.time - SongConductor.safeZoneOffset)
-				{ // The * 0.5 is so that it's easier to hit them too late, instead of too early
+			} else {
+				if (hitTime > SongConductor.time - SongConductor.safeZoneOffset) { // The * 0.5 is so that it's easier to hit them too late, instead of too early
 					if (hitTime < SongConductor.time + (SongConductor.safeZoneOffset * 0.5))
 						canBeHit = true;
-				}
-				else
-				{
+				} else {
 					canBeHit = true;
 					willMiss = true;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			canBeHit = false;
 
 			if (hitTime <= SongConductor.time)
 				wasGoodHit = true;
 		}
 
-		if (tooLate)
-		{
+		if (tooLate) {
 			if (alpha > 0.3)
 				alpha = 0.3;
 		}
 		super.update(elapsed);
 	}
 
-	public function clipToStrumNote(myStrum:Receptor)
-	{
+	public function clipToStrumNote(myStrum:Receptor) {
 		var center:Float = myStrum.y + offsetY + swagWidth / 2;
-		if ((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit)))
-		{
+		if ((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit))) {
 			var swagRect:FlxRect = clipRect;
 			if (swagRect == null)
 				swagRect = new FlxRect(0, 0, frameWidth, frameHeight);
 
-			if (myStrum.downScroll)
-			{
-				if (y - offset.y * scale.y + height >= center)
-				{
+			if (myStrum.downScroll) {
+				if (y - offset.y * scale.y + height >= center) {
 					swagRect.width = frameWidth;
 					swagRect.height = (center - y) / scale.y;
 					swagRect.y = frameHeight - swagRect.height;
 				}
-			}
-			else if (y + offset.y * scale.y <= center)
-			{
+			} else if (y + offset.y * scale.y <= center) {
 				swagRect.y = (center - y) / scale.y;
 				swagRect.width = width / scale.x;
 				swagRect.height = (height / scale.y) - swagRect.y;
@@ -214,14 +193,14 @@ class GameNote extends FlxSprite
 		}
 	}
 	/*
-	override function set_clipRect(rect:FlxRect)
-	{
-		clipRect = rect;
+		override function set_clipRect(rect:FlxRect)
+		{
+			clipRect = rect;
 
-		if (frames != null)
-			frame = frames.frames[animation.frameIndex];
+			if (frames != null)
+				frame = frames.frames[animation.frameIndex];
 
-		return rect;
-	}
+			return rect;
+		}
 	 */
 }

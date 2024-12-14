@@ -1,19 +1,18 @@
 package ume.backend;
 
 import flixel.FlxGame;
+import openfl.display.FPS;
 import openfl.display.Sprite;
 import ume.game.*;
-import ume.objects.FPS_Mem;
 
 class Main extends Sprite
 {
+	public static var fps:FPS = new FPS(10, 10, 0xffffff);
 	public function new()
 	{
 		super();
-		addChild(new FlxGame(0, 0, Title, 120, 60, true));
-
-		var fps_mem:FPS_Mem = new FPS_Mem(10, 10, 0xffffff);
-		addChild(fps_mem);
+		addChild(new FlxGame(0, 0, Title, 60, 60, true));
+		addChild(fps);
 
 		PlayerSettings.init();
 	}

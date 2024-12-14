@@ -50,8 +50,8 @@ class Bar extends FlxSpriteGroup
 		add(rightBar);
 		add(bg);
 
-		bg.replaceColor(FlxColor.WHITE, FlxColor.TRANSPARENT);
 		regenerateClips();
+		bg.replaceColor(FlxColor.WHITE, FlxColor.TRANSPARENT);
 	}
 
 	

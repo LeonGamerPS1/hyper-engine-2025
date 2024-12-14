@@ -3,10 +3,12 @@ package ume.chart.format.v1;
 import haxe.Json;
 import haxe.format.JsonParser;
 import lime.utils.Assets;
-import sys.FileSystem;
 import ume.assets.UMEAssets;
 
 using StringTools;
+#if sys
+import sys.FileSystem;
+#end
 
 typedef SwagSection =
 {
