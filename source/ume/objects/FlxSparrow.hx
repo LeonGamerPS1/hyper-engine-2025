@@ -1,7 +1,6 @@
 package ume.objects;
 
 import flixel.FlxSprite;
-import flxanimate.FlxAnimate;
 import ume.assets.UMEAssets;
 
 class FlxSparrow extends FlxSprite {
