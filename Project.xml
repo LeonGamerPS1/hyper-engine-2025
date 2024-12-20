@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://lime.openfl.org/project/1.0.4"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://lime.openfl.org/project/1.0.4 http://lime.openfl.org/xsd/project-1.0.4.xsd">
+<project xmlns="http://lime.openfl.org/project/1.0.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://lime.openfl.org/project/1.0.4 http://lime.openfl.org/xsd/project-1.0.4.xsd">
 
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Hyper Engine" file="Hyper Engine" main="ume.backend.Main" version="0.0.1" company="494kd" />
+	<app title="hyper funkin" file="hyper funkin" main="Main" version="0.0.1" company="HaxeFlixel" />
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
@@ -16,7 +16,7 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
-	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" />
+	<window width="1280" height="720" fps="120" background="#000000" hardware="true" vsync="false" />
 
 	<!--HTML5-specific-->
 	<window if="html5" resizable="true" />
@@ -29,37 +29,20 @@
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
-	<set name="BUILD_DIR" value="export/release_builds" if="release" />
-	<set name="BUILD_DIR" value="export/debug_builds" if="debug" />
-
-	<haxedef name="MODS_ALLOWED " if="desktop" unless="hl html5" />
-
-
+	<set name="BUILD_DIR" value="export" />
 	<source path="source" />
-	<assets path="hdll"  rename="" if="windows hl" />
-	<assets path="assets/data" />
-	<assets path="assets/images" />
-	<assets path="assets/music" />
-	<assets path="assets/sounds" />
-	<assets path="assets/songs" />
-	<assets path="assets/embed" embed="true" rename="assets" />
-
-	<!-- OpenAL config yoinked from goofy shadow -->
-	<section if="desktop">
-		<assets path="alsoft.txt" rename="plugins/alsoft.ini" type="text" if="windows"/>
-		<assets path="alsoft.txt" rename="plugins/alsoft.conf" type="text" unless="windows"/>
-	</section>
+	<assets path="assets" />
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
-	
-
+	<haxelib name="polymod" />
+	<haxelib name="firetongue" />
 	<!--In case you want to use the addons package-->
-	<haxelib name="flixel-addons" />
+	<!--<haxelib name="flixel-addons" />-->
 
 	<!--In case you want to use the ui package-->
-	<haxelib name="flixel-ui" />
+	<!--<haxelib name="flixel-ui" />-->
 
 	<!--In case you want to use nape with flixel-->
 	<!--<haxelib name="nape-haxe4" />-->
@@ -68,7 +51,7 @@
 
 	<!--Remove the legacy health system-->
 	<haxedef name="FLX_NO_HEALTH" />
-
+	
 	<!--Enable the Flixel core recording system-->
 	<!--<haxedef name="FLX_RECORD" />-->
 

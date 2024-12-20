@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+    <data>
+        <merge/>
+        <locale id="en-US" is_default="true" sort="0">	
+	      	<contributors value="Lars Doucet, Level Up Labs"/>
+	      	<ui language="Language" region="Region" accept="Okay" />
+	      	<label id="en-US,en-GB,en-CA" language="English" region="United States"/>
+	      	<label id="nb-NO" language="Engelsk" region="U.S.A."/>
+	      </locale>
+    </data>
+</data>
