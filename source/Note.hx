@@ -5,8 +5,7 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxRect;
 
-class Note extends FlxSprite
-{
+class Note extends FlxSprite {
 	public var strumTime:Float = 0;
 	public var noteData:Int = 0;
 
@@ -40,8 +39,7 @@ class Note extends FlxSprite
 	public var isSustainNote:Bool = false;
 	public var multSpeed:Float = 1;
 
-	public function new(strumTime:Float = 0, noteData:Int = 0, isSustainNote:Bool = false, ?prevNote:Note, mustPress:Bool = false, pixelNote:Bool = true)
-	{
+	public function new(strumTime:Float = 0, noteData:Int = 0, isSustainNote:Bool = false, ?prevNote:Note, mustPress:Bool = false, pixelNote:Bool = false) {
 		super(0, -2000);
 		this.strumTime = strumTime;
 		this.noteData = noteData;
@@ -58,8 +56,7 @@ class Note extends FlxSprite
 			animation.play('arrow');
 	}
 
-	public function followStrumNote(myStrum:Receptor, fakeCrochet:Float, songSpeed:Float = 1)
-	{
+	public function followStrumNote(myStrum:Receptor, fakeCrochet:Float, songSpeed:Float = 1) {
 		var strumX:Float = myStrum.x;
 		var strumY:Float = myStrum.y;
 		var strumAngle:Float = myStrum.angle;
@@ -83,18 +80,15 @@ class Note extends FlxSprite
 		if (copyX)
 			x = strumX + offsetX + Math.cos(angleDir) * distance;
 
-		if (copyY)
-		{
+		if (copyY) {
 			y = strumY + offsetY + 0 + Math.sin(angleDir) * distance;
-			if (myStrum.downScroll && isSustainNote)
-			{
+			if (myStrum.downScroll && isSustainNote) {
 				y -= (frameHeight * scale.y) - (swagWidth / 2);
 			}
 		}
 	}
 
-	function normal()
-	{
+	function normal() {
 		frames = FlxAtlasFrames.fromSparrow(AssetPaths.arrow__png, AssetPaths.arrow__xml);
 		animation.addByPrefix('arrow', '${colArray[noteData % colArray.length]}0');
 		animation.addByPrefix('hold', '${colArray[noteData % colArray.length]} hold piece');
@@ -103,15 +97,13 @@ class Note extends FlxSprite
 
 		setGraphicSize(width * 0.7);
 
-		if (isSustainNote && prevNote != null)
-		{
+		if (isSustainNote && prevNote != null) {
 			multAlpha = 0.6;
 			offsetX = Note.swagWidth / 4;
 			offsetX += 8;
 			animation.play('holdend');
 			updateHitbox();
-			if (prevNote.isSustainNote)
-			{
+			if (prevNote.isSustainNote) {
 				prevNote.animation.play('hold');
 
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
@@ -120,10 +112,8 @@ class Note extends FlxSprite
 		}
 	}
 
-	function pixel()
-	{
-		if (isSustainNote)
-		{
+	function pixel() {
+		if (isSustainNote) {
 			loadGraphic(AssetPaths.pixelends__png);
 			width = width / 4;
 			height = height / 5;
@@ -135,24 +125,20 @@ class Note extends FlxSprite
 			animation.add('hold', [noteData]);
 			animation.add('holdend', [noteData + 4]);
 
-			if (prevNote != null)
-			{
+			if (prevNote != null) {
 				multAlpha = 0.6;
 				offsetX = Note.swagWidth / 2;
 				animation.play('holdend');
 				updateHitbox();
 				offsetX -= Note.swagWidth / 4;
-				if (prevNote.isSustainNote)
-				{
+				if (prevNote.isSustainNote) {
 					prevNote.animation.play('hold');
 
 					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
 					prevNote.updateHitbox();
 				}
 			}
-		}
-		else
-		{
+		} else {
 			loadGraphic(AssetPaths.pixelArrow__png);
 			width = width / 4;
 			height = height / 5;
@@ -164,12 +150,10 @@ class Note extends FlxSprite
 		}
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
 
-		if (mustPress)
-		{
+		if (mustPress) {
 			// ok river
 			if (strumTime > Conductor.songPosition - (Conductor.safeZoneOffset * lateHitMult)
 				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
@@ -179,39 +163,30 @@ class Note extends FlxSprite
 
 			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset && !wasGoodHit)
 				tooLate = true;
-		}
-		else
-		{
+		} else {
 			canBeHit = false;
 
-			if (strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
-			{
+			if (strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult)) {
 				if ((isSustainNote && prevNote.wasGoodHit) || strumTime <= Conductor.songPosition)
 					wasGoodHit = true;
 			}
 		}
 	}
 
-	public function clipToStrumNote(myStrum:Receptor)
-	{
-		var center:Float = myStrum.y + offsetY + swagWidth / FlxG.random.float(2,2.0);
-		if ((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit)))
-		{
+	public function clipToStrumNote(myStrum:Receptor) {
+		var center:Float = myStrum.y + offsetY + swagWidth / FlxG.random.float(2, 2.0);
+		if ((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit))) {
 			var swagRect:FlxRect = clipRect;
 			if (swagRect == null)
 				swagRect = new FlxRect(0, 0, frameWidth, frameHeight);
 
-			if (myStrum.downScroll)
-			{
-				if (y - offset.y * scale.y + height >= center)
-				{
+			if (myStrum.downScroll) {
+				if (y - offset.y * scale.y + height >= center) {
 					swagRect.width = frameWidth;
 					swagRect.height = (center - y) / scale.y;
 					swagRect.y = frameHeight - swagRect.height;
 				}
-			}
-			else if (y + offset.y * scale.y <= center)
-			{
+			} else if (y + offset.y * scale.y <= center) {
 				swagRect.y = (center - y) / scale.y;
 				swagRect.width = width / scale.x;
 				swagRect.height = (height / scale.y) - swagRect.y;
@@ -221,8 +196,7 @@ class Note extends FlxSprite
 	}
 
 	@:noCompletion
-	override function set_clipRect(rect:FlxRect):FlxRect
-	{
+	override function set_clipRect(rect:FlxRect):FlxRect {
 		clipRect = rect;
 
 		if (frames != null)

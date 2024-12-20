@@ -3,7 +3,7 @@ package;
 import Conductor.BPMChangeEvent;
 import flixel.FlxState;
 
-class MusicBeatState extends FlxState
+class MusicBeatState extends FlxState implements IBeatableImpl
 {
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;

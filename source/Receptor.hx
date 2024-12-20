@@ -15,7 +15,7 @@ class Receptor extends FlxSprite
 
 	public static var colArray:Array<String> = ["arrowLEFT", "arrowDOWN", "arrowUP", "arrowRIGHT"];
 
-	public function new(noteData:Int = 0, isPixel:Bool = true)
+	public function new(noteData:Int = 0, isPixel:Bool = false)
 	{
 		super(0, 50);
 		this.noteData = noteData;
@@ -36,6 +36,7 @@ class Receptor extends FlxSprite
 		height = height / 5;
 		loadGraphic(AssetPaths.pixelArrow__png, true, Math.floor(width), Math.floor(height));
 
+
 		antialiasing = false;
 		setGraphicSize(Std.int(width * 6));
 
@@ -47,20 +48,20 @@ class Receptor extends FlxSprite
 		{
 			case 0:
 				animation.add('static', [0]);
-				animation.add('pressed', [4, 8], 12, false);
-				animation.add('confirm', [12, 16], 12, false);
+				animation.add('pressed', [4, 8], 24, false);
+				animation.add('confirm', [12, 16], 24, false);
 			case 1:
 				animation.add('static', [1]);
-				animation.add('pressed', [5, 9], 12, false);
-				animation.add('confirm', [13, 17], 12, false);
+				animation.add('pressed', [5, 9], 24, false);
+				animation.add('confirm', [13, 17], 24, false);
 			case 2:
 				animation.add('static', [2]);
-				animation.add('pressed', [6, 10], 12, false);
-				animation.add('confirm', [14, 18], 12, false);
+				animation.add('pressed', [6, 10], 24, false);
+				animation.add('confirm', [14, 18], 24, false);
 			case 3:
 				animation.add('static', [3]);
-				animation.add('pressed', [7, 11], 12, false);
-				animation.add('confirm', [15, 19], 12, false);
+				animation.add('pressed', [7, 11], 24, false);
+				animation.add('confirm', [15, 19], 24, false);
 		}
 	}
 
