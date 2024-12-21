@@ -105,8 +105,7 @@ class Note extends FlxSprite {
 			updateHitbox();
 			if (prevNote.isSustainNote) {
 				prevNote.animation.play('hold');
-
-				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
+				prevNote.scale.y = 0.7 * (Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed);
 				prevNote.updateHitbox();
 			}
 		}
@@ -134,7 +133,7 @@ class Note extends FlxSprite {
 				if (prevNote.isSustainNote) {
 					prevNote.animation.play('hold');
 
-					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
+					prevNote.scale.y = 6 * Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
 					prevNote.updateHitbox();
 				}
 			}

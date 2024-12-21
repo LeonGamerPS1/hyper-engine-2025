@@ -1,5 +1,8 @@
 package;
 
+import flixel.group.FlxGroup;
+import flixel.FlxCamera;
+import effects.NoteSplash;
 import Song.SwagSong;
 import flixel.FlxG;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -23,13 +26,12 @@ class PlayState extends MusicBeatState {
 
 	public var defaultCamZoom:Float = 1.0;
 	public var voices:FlxSound = new FlxSound();
-
 	public var opponentStrums:FlxTypedGroup<Receptor> = new FlxTypedGroup();
 	public var playerStrums:FlxTypedGroup<Receptor> = new FlxTypedGroup();
 
 	public var unspawnNotes:Array<Note> = [];
 	public var generatedMusic:Bool = true;
-	public var cpuControlled:Bool = false;
+	public var cpuControlled:Bool = true;
 
 	public var shit:ModuleS;
 
@@ -37,10 +39,19 @@ class PlayState extends MusicBeatState {
 
 	public var scripts:Array<HScript> = [];
 
+	public var grpNoteSplashes:FlxTypedGroup<NoteSplash> = new FlxTypedGroup(4);
+	public var songScore:Float = 0;
+
+	public var camHUD:FlxCamera = new FlxCamera();
+	public var uiGroup:FlxGroup = new FlxGroup();
+
 	override public function create() {
 		instance = this;
 		if (SONG == null)
 			SONG = Song.loadFromJson('unbeatable', 'unbeatable');
+
+		camHUD.bgColor.alpha = 0;
+		FlxG.cameras.add(camHUD, false);
 
 		var ass = FileUtil.readDirectory("assets/scripts", 2).filter(function(ffe:String) {
 			return ffe.contains(".hx");
@@ -63,18 +74,24 @@ class PlayState extends MusicBeatState {
 		call("onCreate");
 		text.y += 10;
 		text.x += 10;
-		add(text);
+		uiGroup.add(text);
 		genSkibidi();
 		Conductor.changeBPM(SONG.bpm);
+
+		call("onCreatePost");
+		uiGroup.add(grpNoteSplashes);
+
 		voices.loadEmbedded('assets/music/${SONG.song.toLowerCase()}/Voices.ogg');
 		FlxG.sound.list.add(voices);
 		FlxG.sound.playMusic('assets/music/${SONG.song.toLowerCase()}/Inst.ogg', false);
 		voices.play();
+
 		FlxG.sound.music.onComplete = function() {
 			FlxG.switchState(new SongSel());
 		};
-		call("onCreatePost");
 		super.create();
+		add(uiGroup);
+		uiGroup.cameras = [camHUD];
 	}
 
 	function eventNoteEarlyTrigger(obj:Array<Dynamic>):Float {
@@ -108,9 +125,9 @@ class PlayState extends MusicBeatState {
 			playerStrums.add(num);
 		}
 
-		add(playerStrums);
-		add(opponentStrums);
-		add(notes);
+		uiGroup.add(playerStrums);
+		uiGroup.add(opponentStrums);
+		uiGroup.add(notes);
 		var sections:Array<SwagSection> = SONG.notes;
 
 		for (section in sections) {
@@ -170,11 +187,20 @@ class PlayState extends MusicBeatState {
 		super.update(elapsed);
 		if (Math.abs(voices.time - Conductor.songPosition) > 20)
 			voices.time = Conductor.songPosition;
-		if (FlxG.camera.zoom != defaultCamZoom)
+		if (FlxG.camera.zoom != defaultCamZoom) {
 			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
+		}
+		if (camHUD.zoom != 1) {
+			camHUD.zoom = FlxMath.lerp(defaultCamZoom, camHUD.zoom, 0.95);
+		}
 		songSpeed = SONG.speed;
 
 		notes.forEachAlive(function(daNote:Note) {
+			if (daNote.strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * daNote.earlyHitMult)) {
+				if ((daNote.isSustainNote && daNote.prevNote.wasGoodHit) || daNote.strumTime <= Conductor.songPosition)
+					if (daNote.mustPress)
+						goodNoteHit(daNote);
+			}
 			var receptor:Receptor = !daNote.mustPress ? opponentStrums.members[daNote.noteData] : playerStrums.members[daNote.noteData];
 			daNote.followStrumNote(receptor, 0, songSpeed);
 			if (daNote.isSustainNote && receptor.sustainReduce)
@@ -201,7 +227,8 @@ class PlayState extends MusicBeatState {
 				daNote.destroy();
 			}
 		});
-		keyShit();
+		if (!cpuControlled)
+			keyShit();
 
 		call("onUpdatePost", elapsed);
 	}
@@ -307,7 +334,10 @@ class PlayState extends MusicBeatState {
 		daNote.wasGoodHit = true;
 		var receptor:Receptor = playerStrums.members[daNote.noteData];
 		receptor.playAnim('confirm', true);
+		if (cpuControlled)
+			receptor.resetAnim = Conductor.stepCrochet * 1.5 / 1000;
 		if (!daNote.isSustainNote) {
+			popUpScore(daNote.strumTime, daNote);
 			daNote.kill();
 			notes.remove(daNote, true);
 			daNote.destroy();
@@ -327,8 +357,10 @@ class PlayState extends MusicBeatState {
 	override function beatHit() {
 		super.beatHit();
 		notes.sort(FlxSort.byY, FlxSort.DESCENDING);
-		if (curBeat % 4 == 0)
+		if (curBeat % 4 == 0) {
 			FlxG.camera.zoom += 0.015;
+			camHUD.zoom += 0.025;
+		}
 		call("onBeatHit");
 		set("curBeat", curBeat);
 	}
@@ -338,5 +370,39 @@ class PlayState extends MusicBeatState {
 
 		call("onStepHit");
 		set("curStep", curStep);
+	}
+
+	private function popUpScore(strumtime:Float, daNote:Note):Void {
+		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
+		// boyfriend.playAnim('hey');
+		voices.volume = 1;
+		var score:Int = 350;
+		var daRating:String = "sick";
+		var isSick:Bool = true;
+
+		if (noteDiff > Conductor.safeZoneOffset * 0.9) {
+			daRating = 'shit';
+			score = 50;
+			isSick = false; // shitty copypaste on this literally just because im lazy and tired lol!
+		} else if (noteDiff > Conductor.safeZoneOffset * 0.75) {
+			daRating = 'bad';
+			score = 100;
+			isSick = false;
+		} else if (noteDiff > Conductor.safeZoneOffset * 0.2) {
+			daRating = 'good';
+			score = 200;
+			isSick = false;
+		}
+
+		if (isSick) {
+			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
+			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
+			// new NoteSplash(daNote.x, daNote.y, daNote.noteData);
+			grpNoteSplashes.add(noteSplash);
+		}
+
+		// Only add the score if you're not on cpuControlled mode
+		if (!cpuControlled)
+			songScore += score;
 	}
 }

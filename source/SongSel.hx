@@ -29,7 +29,7 @@ class SongSel extends MusicBeatState {
 		songs = FileUtil.readDirectory("assets/music", 2).filter(function(ffe:String) {
 			return !ffe.contains(".txt");
 		});
-		var i:Null<Int> = 0;
+		var i:Int = 0;
 		for (song in songs) {
 			var item:FlxBitmapText = new FlxBitmapText(0, 0, song);
 			item.screenCenter();
@@ -38,7 +38,7 @@ class SongSel extends MusicBeatState {
 			items.add(item);
 			i++;
 		}
-		i = null;
+	
 		add(items);
 
 		camFollow = new FlxObject(0, 0, 1, 1);
@@ -48,7 +48,7 @@ class SongSel extends MusicBeatState {
 	}
 
 	override function update(elapsed:Float):Void {
-		super.update(elapsed);
+		//super.update(elapsed);
 		if (controls.UI_DOWN_P)
 			changeSel(1);
 		if (controls.UI_UP_P)
