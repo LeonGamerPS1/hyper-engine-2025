@@ -1,5 +1,6 @@
 package;
 
+import backend.DiscordClient;
 import lime.app.Application;
 import flixel.effects.FlxFlicker;
 import flixel.tweens.FlxTween;
@@ -15,11 +16,11 @@ using StringTools;
 class SongSel extends MusicBeatState {
 	var songs:Array<String> = [];
 
-	var items:FlxTypedGroup<FlxBitmapText> = new FlxTypedGroup();
+	var items:FlxTypedGroup<Alphabet> = new FlxTypedGroup();
 	var curSel:Int = 0;
 
 	var camFollow:FlxObject;
-	var curSelected(get, null):FlxBitmapText;
+	var curSelected(get, null):Alphabet;
 
 	var selSom:Bool = false;
 
@@ -31,20 +32,22 @@ class SongSel extends MusicBeatState {
 		});
 		var i:Int = 0;
 		for (song in songs) {
-			var item:FlxBitmapText = new FlxBitmapText(0, 0, song);
+			var item:Alphabet = new Alphabet(0,0,song,true);
 			item.screenCenter();
-			item.y += (30 * i);
-			item.scale.set(2, 2);
+			item.y += (70 * i);
+			//item.scale.set(2, 2);
 			items.add(item);
 			i++;
 		}
-	
+
 		add(items);
 
 		camFollow = new FlxObject(0, 0, 1, 1);
 		camFollow.screenCenter();
 		FlxG.camera.follow(camFollow, FlxCameraFollowStyle.LOCKON);
 		changeSel();
+
+		DiscordClient.changePresence("In the Menus");
 	}
 
 	override function update(elapsed:Float):Void {
@@ -69,8 +72,7 @@ class SongSel extends MusicBeatState {
 		for (i in 0...items.length) {
 			var item = items.members[i];
 			item.alpha = item == curSelected ? 1 : 0.7;
-			item.scale.set(item == curSelected ? FlxMath.lerp(1.9, item.scale.x, 0.95) : FlxMath.lerp(1.5, item.scale.x, 0.95),
-				item == curSelected ? FlxMath.lerp(1.9, item.scale.y, 0.95) : FlxMath.lerp(1.5, item.scale.y, 0.95));
+
 		}
 	}
 
@@ -83,10 +85,10 @@ class SongSel extends MusicBeatState {
 			curSel = 0;
 
 		if (curSelected != null)
-			FlxTween.tween(camFollow, {x: curSelected.getGraphicMidpoint().x, y: curSelected.getGraphicMidpoint().y}, 0.2);
+			FlxTween.tween(camFollow, {x: 300, y: curSelected.getGraphicMidpoint().y}, 0.2);
 	}
 
-	function get_curSelected():FlxBitmapText {
+	function get_curSelected():Alphabet {
 		return items.members[curSel];
 	}
 }

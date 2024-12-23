@@ -4,7 +4,7 @@
 
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="hyper funkin" file="hyper funkin" main="Main" version="0.0.1" company="HaxeFlixel" />
+	<app title="hyper funkin" file="hyper-funkin" main="Main" version="0.0.1" company="494kd" />
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
@@ -32,19 +32,20 @@
 	<set name="BUILD_DIR" value="export" />
 	<source path="source" />
 	<assets path="assets" />
+	<assets path="hdll/windows" rename="" if="hl windows" />
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
 	<haxelib name="polymod" />
 	<haxelib name="hxdiscord_rpc" if="cpp" />
-	<haxelib name="hashcord" if="hl" />
+	<haxelib name="hldiscord_rpc" if="hl" />
 	<haxelib name="firetongue" />
 	<!--In case you want to use the addons package-->
-	<!--<haxelib name="flixel-addons" />-->
+	<haxelib name="flixel-addons" />
 
 	<!--In case you want to use the ui package-->
-	<!--<haxelib name="flixel-ui" />-->
+	<haxelib name="flixel-ui" />
 
 	<!--In case you want to use nape with flixel-->
 	<!--<haxelib name="nape-haxe4" />-->

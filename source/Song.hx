@@ -13,6 +13,12 @@ typedef SwagSong =
 	var sections:Int;
 	var needsVoices:Bool;
 	var speed:Float;
+
+	var player1:String;
+	var player2:String;
+
+	
+	var gfVersion:String;
 }
 
 class Song
@@ -49,6 +55,10 @@ class Song
 		}
 
 		var swagShit:SwagSong = cast Json.parse(rawJson).song;
+
+		swagShit.player1 ??= "bf";
+		swagShit.player2 ??= "dad";
+		swagShit.gfVersion ??= "gf";
 
 		return swagShit;
 	}

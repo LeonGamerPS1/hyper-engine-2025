@@ -1,5 +1,6 @@
 package ofl.fps;
 
+import flixel.util.FlxStringUtil;
 import haxe.Timer;
 import openfl.display.FPS;
 import openfl.events.Event;
@@ -16,20 +17,18 @@ class FPS_Mem extends TextField {
 		super();
 
 		x = inX / 2;
-		y = inY /2;
+		y = inY / 2;
 
 		selectable = false;
 
 		defaultTextFormat = new TextFormat("_sans", 13, inCol);
 
 		text = "FPS: ";
-
 		times = [];
 
 		addEventListener(Event.ENTER_FRAME, onEnter);
 
-		width = 150;
-
+		width = 300;
 		height = 70;
 	}
 
@@ -41,13 +40,12 @@ class FPS_Mem extends TextField {
 		while (times[0] < now - 1)
 			times.shift();
 
-		var mem:Float = Math.round(System.totalMemory / 1024 / 1024 * 100) / 100;
-
+		var mem = debug.Memory.gay();
 		if (mem > memPeak)
 			memPeak = mem;
 
 		if (visible) {
-			text = "FPS: " + times.length + "\nMemory: " + mem + "MB";
+			text = "FPS: " + times.length + "\nMem: " + FlxStringUtil.formatBytes(mem) + " // Peak: " + FlxStringUtil.formatBytes(memPeak);
 		}
 	}
 }

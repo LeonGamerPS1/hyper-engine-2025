@@ -3,8 +3,7 @@ package;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 
-class Receptor extends FlxSprite
-{
+class Receptor extends FlxSprite {
 	public var noteData:Int;
 	public var resetAnim:Float = 0;
 
@@ -15,8 +14,7 @@ class Receptor extends FlxSprite
 
 	public static var colArray:Array<String> = ["arrowLEFT", "arrowDOWN", "arrowUP", "arrowRIGHT"];
 
-	public function new(noteData:Int = 0, isPixel:Bool = false)
-	{
+	public function new(noteData:Int = 0, isPixel:Bool = false) {
 		super(0, 50);
 		this.noteData = noteData;
 		if (isPixel == false)
@@ -29,13 +27,11 @@ class Receptor extends FlxSprite
 		updateHitbox();
 	}
 
-	function pixel()
-	{
-		loadGraphic(AssetPaths.pixelArrow__png);
+	function pixel() {
+		loadGraphic(Paths.image("pixelUI/pixelarrow"));
 		width = width / 4;
 		height = height / 5;
-		loadGraphic(AssetPaths.pixelArrow__png, true, Math.floor(width), Math.floor(height));
-
+		loadGraphic(Paths.image("pixelUI/pixelarrow"), true, Math.floor(width), Math.floor(height));
 
 		antialiasing = false;
 		setGraphicSize(Std.int(width * 6));
@@ -44,8 +40,7 @@ class Receptor extends FlxSprite
 		animation.add('red', [7]);
 		animation.add('blue', [5]);
 		animation.add('purple', [4]);
-		switch (Math.abs(noteData))
-		{
+		switch (Math.abs(noteData)) {
 			case 0:
 				animation.add('static', [0]);
 				animation.add('pressed', [4, 8], 24, false);
@@ -65,9 +60,8 @@ class Receptor extends FlxSprite
 		}
 	}
 
-	function normal()
-	{
-		frames = FlxAtlasFrames.fromSparrow(AssetPaths.arrow__png, AssetPaths.arrow__xml);
+	function normal() {
+		frames = Paths.getSparrowAtlas("NOTE_assets");
 		animation.addByPrefix('static', '${colArray[noteData % colArray.length]}0');
 		animation.addByPrefix('pressed', '${colArray[noteData % colArray.length].split("arrow")[1].toLowerCase()} press', 24, false);
 		animation.addByPrefix('confirm', '${colArray[noteData % colArray.length].split("arrow")[1].toLowerCase()} confirm', 24, false);
@@ -77,13 +71,10 @@ class Receptor extends FlxSprite
 		antialiasing = true;
 	}
 
-	override function update(elapsed:Float)
-	{
-		if (resetAnim > 0)
-		{
+	override function update(elapsed:Float) {
+		if (resetAnim > 0) {
 			resetAnim -= elapsed;
-			if (resetAnim <= 0)
-			{
+			if (resetAnim <= 0) {
 				playAnim('static');
 				resetAnim = 0;
 			}
@@ -91,11 +82,9 @@ class Receptor extends FlxSprite
 		super.update(elapsed);
 	}
 
-	public function playAnim(anim:String, ?force:Bool = false)
-	{
+	public function playAnim(anim:String, ?force:Bool = false) {
 		animation.play(anim, force);
-		if (animation.curAnim != null)
-		{
+		if (animation.curAnim != null) {
 			centerOffsets();
 			centerOrigin();
 		}

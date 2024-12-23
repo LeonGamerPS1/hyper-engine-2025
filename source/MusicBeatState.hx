@@ -1,10 +1,10 @@
 package;
 
+import flixel.addons.ui.FlxUIState;
 import Conductor.BPMChangeEvent;
-import flixel.FlxState;
 
-class MusicBeatState extends FlxState implements IBeatableImpl
-{
+
+class MusicBeatState extends FlxUIState {
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 	private var totalSection:Int = 0;
@@ -14,51 +14,48 @@ class MusicBeatState extends FlxState implements IBeatableImpl
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
 
-
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		// everyStep();
 		var oldStep:Int = curStep;
-
+		var oldSection:Int = totalSection;
 		updateCurStep();
 		updateBeat();
 
 		if (oldStep != curStep && curStep >= 0)
 			stepHit();
 
+		if (oldSection != totalSection && totalSection >= 0)
+			sectionHit();
+
 		super.update(elapsed);
 	}
 
-	private function updateBeat():Void
-	{
+	private function updateBeat():Void {
 		curBeat = Math.floor(curStep / 4);
 	}
 
-	private function updateCurStep():Void
-	{
+	private function updateCurStep():Void {
 		var lastChange:BPMChangeEvent = {
 			stepTime: 0,
 			songTime: 0,
 			bpm: 0
 		}
-		for (i in 0...Conductor.bpmChangeMap.length)
-		{
+		for (i in 0...Conductor.bpmChangeMap.length) {
 			if (Conductor.songPosition >= Conductor.bpmChangeMap[i].songTime)
 				lastChange = Conductor.bpmChangeMap[i];
 		}
 
 		curStep = lastChange.stepTime + Math.floor((Conductor.songPosition - lastChange.songTime) / Conductor.stepCrochet);
-        
+
 		totalSection = lastChange.stepTime + Math.floor((Conductor.songPosition - lastChange.songTime) / (Conductor.crochet * 4));
 	}
 
-	public function stepHit():Void
-	{
+	public function stepHit():Void {
 		if (curStep % 4 == 0)
 			beatHit();
 	}
 
-	public function beatHit():Void
-	{
-	}
+	public function beatHit():Void {}
+
+	public function sectionHit():Void {}
 }

@@ -89,7 +89,7 @@ class Note extends FlxSprite {
 	}
 
 	function normal() {
-		frames = FlxAtlasFrames.fromSparrow(AssetPaths.arrow__png, AssetPaths.arrow__xml);
+		frames = Paths.getSparrowAtlas("NOTE_assets");
 		animation.addByPrefix('arrow', '${colArray[noteData % colArray.length]}0');
 		animation.addByPrefix('hold', '${colArray[noteData % colArray.length]} hold piece');
 		animation.addByPrefix('holdend', '${colArray[noteData % colArray.length]} hold end');
@@ -98,7 +98,7 @@ class Note extends FlxSprite {
 		setGraphicSize(width * 0.7);
 
 		if (isSustainNote && prevNote != null) {
-			multAlpha = 0.6;
+			//multAlpha = 0.6;
 			offsetX = Note.swagWidth / 4;
 			offsetX += 8;
 			animation.play('holdend');
@@ -113,10 +113,10 @@ class Note extends FlxSprite {
 
 	function pixel() {
 		if (isSustainNote) {
-			loadGraphic(AssetPaths.pixelends__png);
+			loadGraphic(Paths.image("pixelUI/pixelends"));
 			width = width / 4;
 			height = height / 5;
-			loadGraphic(AssetPaths.pixelends__png, true, 7, 5);
+			loadGraphic(Paths.image("pixelUI/pixelends"), true, 7, 5);
 
 			antialiasing = false;
 			setGraphicSize(Std.int(width * 6));
@@ -125,7 +125,7 @@ class Note extends FlxSprite {
 			animation.add('holdend', [noteData + 4]);
 
 			if (prevNote != null) {
-				multAlpha = 0.6;
+			//	multAlpha = 0.6;
 				offsetX = Note.swagWidth / 2;
 				animation.play('holdend');
 				updateHitbox();
@@ -138,10 +138,10 @@ class Note extends FlxSprite {
 				}
 			}
 		} else {
-			loadGraphic(AssetPaths.pixelArrow__png);
+			loadGraphic(Paths.image("pixelUI/pixelarrow"));
 			width = width / 4;
 			height = height / 5;
-			loadGraphic(AssetPaths.pixelArrow__png, true, Math.floor(width), Math.floor(height));
+			loadGraphic(Paths.image("pixelUI/pixelarrow"), true, Math.floor(width), Math.floor(height));
 
 			antialiasing = false;
 			setGraphicSize(Std.int(width * 6));
