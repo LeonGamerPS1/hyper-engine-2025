@@ -5,9 +5,10 @@ import hxdiscord_rpc.Types.DiscordEventHandlers;
 import hxdiscord_rpc.Types.DiscordUser;
 import hxdiscord_rpc.Discord;
 import hxdiscord_rpc.Types.DiscordRichPresence;
+import sys.thread.Thread;
 #end
 import lime.app.Application;
-import sys.thread.Thread;
+
 
 @:publicFields
 class DiscordClient {

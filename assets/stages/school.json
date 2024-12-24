@@ -1,0 +1,14 @@
+{
+    "bfOffsets": [970, 320], 
+    "gfOffsets": [580, 430], 
+    "dadOffsets": [100, 100], 
+  
+    "cam_dad": [0,0], 
+    "cam_bf": [-100, -100], 
+    "cam_gf": [0,0], 
+  
+    "isPixel": true, 
+  
+    "defaultCamZoom": 1.05 
+  }
+  

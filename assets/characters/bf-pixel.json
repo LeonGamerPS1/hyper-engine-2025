@@ -1,0 +1,64 @@
+{
+    "name": "bf-pixel",
+    "texture_path": "bfPixel",
+    "health_icon": "bf-pixel",
+    "health_colors": [
+        128,
+        0,
+        128
+    ],
+    "flipX": true,
+    "animations": [
+        {
+            "name": "idle",
+            "prefix": "BF IDLE instance 1",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singLEFT",
+            "prefix": "BF LEFT NOTE instance 1",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singDOWN",
+            "prefix": "BF DOWN NOTE instance 1",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singUP",
+            "prefix": "BF UP NOTE instance 1",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singRIGHT",
+            "prefix": "BF RIGHT NOTE instance 1",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "position": [
+        0,
+        350
+    ],
+    "camera_position": [
+        50,
+        -60
+    ],
+    "scale": 6,
+    "dancer": false,
+    "singDuration": 6
+}

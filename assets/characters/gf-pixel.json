@@ -1,0 +1,75 @@
+{
+    "name": "gf-pixel",
+    "texture_path": "gfPixel",
+    "health_icon": "gf",
+    "health_colors": [
+        128,
+        0,
+        20
+    ],
+    "flipX": false,
+    "animations": [
+        {
+            "name": "danceLeft",
+            "prefix": "GF IDLE",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0,
+            "indices": [
+                30,
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14
+            ]
+        },
+        {
+            "name": "danceRight",
+            "prefix": "GF IDLE",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0,
+            "indices": [
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+            ]
+        }
+    ],
+    "scale": 5.9,
+    "dancer": true,
+    "singDuration": 5,
+    "camera_position": [
+        -20,
+        80
+    ],
+    "position": [
+        130,
+        300
+    ]
+}

@@ -1,0 +1,64 @@
+{
+    "name": "senpai",
+    "texture_path": "senpai",
+    "health_icon": "senpai-pixel",
+    "health_colors": [
+        128,
+        0,
+        128
+    ],
+    "flipX": false,
+    "animations": [
+        {
+            "name": "idle",
+            "prefix": "Senpai Idle instance 1",
+            "fps": 24,
+            "looped": false,
+            "x": 1,
+            "y": 0
+        },
+        {
+            "name": "singLEFT",
+            "prefix": "SENPAI LEFT NOTE instance 1",
+            "fps": 24,
+            "looped": false,
+            "x": 40,
+            "y": 0
+        },
+        {
+            "name": "singDOWN",
+            "prefix": "SENPAI DOWN NOTE instance 1",
+            "fps": 24,
+            "looped": false,
+            "x": 14,
+            "y": 0
+        },
+        {
+            "name": "singUP",
+            "prefix": "SENPAI UP NOTE instance 1",
+            "fps": 24,
+            "looped": false,
+            "x": 5,
+            "y": 37
+        },
+        {
+            "name": "singRIGHT",
+            "prefix": "SENPAI RIGHT NOTE instance 1",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "position": [
+        150,
+        360
+    ],
+    "camera_position": [
+        -240,
+        -330
+    ],
+    "scale": 6,
+    "dancer": false,
+    "singDuration": 6
+}

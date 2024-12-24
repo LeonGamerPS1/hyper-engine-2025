@@ -1,0 +1,96 @@
+{
+    "name": "senpai",
+    "texture_path": "Duet_Assets",
+    "health_icon": "senpai-pixel",
+    "health_colors": [
+        128,
+        0,
+        128
+    ],
+    "flipX": false,
+    "animations": [
+        {
+            "name": "idle",
+            "prefix": "Duet Idle",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singLEFT",
+            "prefix": "Duet Monika LEFT NOTE",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singDOWN",
+            "prefix": "Duet Monika DOWN NOTE",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singUP",
+            "prefix": "Duet Monika UP NOTE",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singRIGHT",
+            "prefix": "Duet Monika RIGHT NOTE",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singLEFT-alt",
+            "prefix": "Duet Senpai LEFT NOTE",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singDOWN-alt",
+            "prefix": "Duet Senpai DOWN NOTE",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singUP-alt",
+            "prefix": "Duet Senpai UP NOTE",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "name": "singRIGHT-alt",
+            "prefix": "Duet Senpai RIGHT NOTE",
+            "fps": 24,
+            "looped": false,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "position": [
+        150,
+        360
+    ],
+    "camera_position": [
+        -240,
+        -330
+    ],
+    "scale": 5.999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999,
+    "dancer": false,
+    "singDuration": 6
+}

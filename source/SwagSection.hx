@@ -9,6 +9,8 @@ typedef SwagSection =
 	var bpm:Int;
 	var changeBPM:Bool;
 
+	@:optional var altAnim:Bool;
+
 	@:optional var gfSection:Bool;
 }
 

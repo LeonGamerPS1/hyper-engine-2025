@@ -1,5 +1,7 @@
 package;
 
+import haxe.Json;
+import openfl.Assets;
 import flixel.math.FlxPoint;
 import flixel.FlxObject;
 import flixel.util.FlxColor;
@@ -72,8 +74,10 @@ class PlayState extends MusicBeatState {
 	public var boyfriend:Character;
 	public var gf:Character;
 	public var dad:Character;
-	public var curStage(default, null):String = "school";
-	public var daPixelZoom(default, null):Float = 6.0;
+	public var curStage(default, default):String = "stage";
+
+	public static var daPixelZoom(default, null):Float = 6.0;
+
 	public var startedSong(default, null):Bool = false;
 	public var gfSpeed:Int = 1;
 	public var boyfriendGroup:FlxSpriteGroup;
@@ -86,11 +90,15 @@ class PlayState extends MusicBeatState {
 
 	private var singAnimations:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
 
+	public var stageJson:StageFile;
+
 	override public function create() {
 		instance = this;
 
 		if (SONG == null)
 			SONG = Song.loadFromJson('dreams of roses-hard', 'dreams of roses');
+
+		parseStage(SONG.stage);
 
 		DiscordClient.changePresence("Song: " + SONG.song);
 
@@ -169,6 +177,7 @@ class PlayState extends MusicBeatState {
 		camFollow = new FlxObject();
 		camFollow.setPosition(camPos.x, camPos.y);
 		camPos.put();
+		yes.set(camPos.x, camPos.y);
 		add(camFollow);
 
 		FlxG.camera.follow(camFollow, LOCKON, 0);
@@ -177,7 +186,7 @@ class PlayState extends MusicBeatState {
 
 		//	FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 		moveCameraSection(0);
-
+		FlxG.camera.focusOn(yes);
 		super.create();
 
 		add(uiGroup);
@@ -193,6 +202,40 @@ class PlayState extends MusicBeatState {
 		// FlxG.sound.music.loadEmbedded('assets/music/${SONG.song.toLowerCase()}/Inst.ogg');
 
 		startCountdown();
+	}
+
+	function parseStage(path:String) {
+		if (Assets.exists('assets/stages/$path.json'))
+			stageJson = cast Json.parse(Assets.getText('assets/stages/$path.json'));
+		else
+			stageJson = cast Json.parse(Assets.getText('assets/stages/stage.json'));
+		if (stageJson.defaultCamZoom != null)
+			defaultCamZoom = stageJson.defaultCamZoom;
+		if (stageJson.bfOffsets != null && stageJson.bfOffsets.length > 1) {
+			BF_X = stageJson.bfOffsets[0];
+			BF_Y = stageJson.bfOffsets[1];
+		}
+		if (stageJson.dadOffsets != null && stageJson.dadOffsets.length > 1) {
+			DAD_X = stageJson.dadOffsets[0];
+			DAD_Y = stageJson.dadOffsets[1];
+		}
+		if (stageJson.gfOffsets != null && stageJson.gfOffsets.length > 1) {
+			GF_X = stageJson.gfOffsets[0];
+			GF_X = stageJson.gfOffsets[1];
+		}
+		if (stageJson.cam_bf != null && stageJson.cam_bf.length > 1)
+			boyfriendCameraOffset = stageJson.cam_bf;
+		if (stageJson.cam_gf != null && stageJson.cam_gf.length > 1)
+			girlfriendCameraOffset = stageJson.cam_gf;
+		if (stageJson.cam_dad != null && stageJson.cam_dad.length > 1)
+			opponentCameraOffset = stageJson.cam_dad;
+
+		curStage = path;
+
+		switch curStage {
+			default:
+				new stages.School(this, true);
+		}
 	}
 
 	var startTimer:FlxTimer;
@@ -363,7 +406,7 @@ class PlayState extends MusicBeatState {
 
 	function genSkibidi() {
 		for (i in 0...4) {
-			var num:Receptor = new Receptor(i);
+			var num:Receptor = new Receptor(i, stageJson.isPixel == true ? true : false);
 			num.x += Note.swagWidth * i;
 			num.downScroll = downScroll;
 			if (downScroll)
@@ -371,7 +414,7 @@ class PlayState extends MusicBeatState {
 			opponentStrums.add(num);
 		}
 		for (i in 0...4) {
-			var num:Receptor = new Receptor(i);
+			var num:Receptor = new Receptor(i, stageJson.isPixel == true ? true : false);
 
 			num.x += Note.swagWidth * i;
 			num.x += FlxG.width / 2;
@@ -431,16 +474,18 @@ class PlayState extends MusicBeatState {
 				if (daNoteData == -1)
 					continue;
 
-				var swagNote:Note = new Note(daStrumTime, daNoteData, false, oldNote, gottaHitNote);
+				var swagNote:Note = new Note(daStrumTime, daNoteData, false, oldNote, gottaHitNote, stageJson.isPixel == true ? true : false);
+				swagNote.altNote = section.altAnim == true;
 				unspawnNotes.push(swagNote);
 
 				var sussyLength:Float = sussyLengy / Conductor.stepCrochet;
 
 				for (susNote in 0...Std.int(sussyLength)) {
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
-					var swagNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / SONG.speed), daNoteData, true,
-						oldNote, gottaHitNote);
-					unspawnNotes.push(swagNote);
+					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / SONG.speed), daNoteData, true,
+						oldNote, gottaHitNote, stageJson.isPixel == true ? true : false);
+					sustainNote.altNote = section.altAnim == true;
+					unspawnNotes.push(sustainNote);
 				}
 			}
 		}
@@ -565,7 +610,7 @@ class PlayState extends MusicBeatState {
 			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
 		}
 		if (camHUD.zoom != 1) {
-			camHUD.zoom = FlxMath.lerp(defaultCamZoom, camHUD.zoom, 0.95);
+			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
 			camUnderlay.zoom = camHUD.zoom;
 		}
 		songSpeed = SONG.speed;
@@ -710,6 +755,8 @@ class PlayState extends MusicBeatState {
 
 		var char:Character = dad;
 		var animToPlay:String = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length - 1, daNote.noteData % 4)))];
+		if (daNote.altNote && char.hasAnimation(animToPlay + '-alt'))
+			animToPlay += '-alt';
 		char.playAnim(animToPlay, true);
 		char.holdTimer = 0;
 
@@ -737,6 +784,8 @@ class PlayState extends MusicBeatState {
 
 		var char:Character = boyfriend;
 		var animToPlay:String = singAnimations[Std.int(Math.abs(Math.min(singAnimations.length - 1, daNote.noteData % 4)))];
+		if (daNote.altNote && char.hasAnimation(animToPlay + '-alt'))
+			animToPlay += '-alt';
 		char.playAnim(animToPlay, true);
 		char.holdTimer = 0;
 		health += 0.025;

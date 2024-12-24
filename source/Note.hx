@@ -19,6 +19,8 @@ class Note extends FlxSprite {
 	public var wasGoodHit:Bool = false;
 	public var ignoreNote:Bool = false;
 
+	public var altNote:Bool = false;
+
 	public var offsetX:Float = 0;
 	public var offsetY:Float = 0;
 	public var offsetAngle:Float = 0;
@@ -173,7 +175,7 @@ class Note extends FlxSprite {
 	}
 
 	public function clipToStrumNote(myStrum:Receptor) {
-		var center:Float = myStrum.y + offsetY + swagWidth / FlxG.random.float(2, 2.0);
+		var center:Float = myStrum.y + offsetY + swagWidth / 2;
 		if ((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit))) {
 			var swagRect:FlxRect = clipRect;
 			if (swagRect == null)
@@ -194,13 +196,5 @@ class Note extends FlxSprite {
 		}
 	}
 
-	@:noCompletion
-	override function set_clipRect(rect:FlxRect):FlxRect {
-		clipRect = rect;
 
-		if (frames != null)
-			frame = frames.frames[animation.frameIndex];
-
-		return rect;
-	}
 }

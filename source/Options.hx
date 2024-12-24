@@ -20,6 +20,7 @@ class Options extends MusicBeatSubState {
 		"strumGlowOpp" => false,
 		"downScroll" => false,
 		"cpuControlled" => false,
+		"lowQuality" => false,
 	];
 
 	override public function create():Void {
@@ -33,7 +34,8 @@ class Options extends MusicBeatSubState {
 			{label: "Botplay Strums Glow", key: "strumGlowBot", value: true},
 			{label: "Opponent Strums Glow", key: "strumGlowOpp", value: false},
 			{label: "Down-Scroll", key: "downScroll", value: false},
-			{label: "Botplay", key: "cpuControlled", value: false}
+			{label: "Botplay", key: "cpuControlled", value: false},
+			{label: "Low-Quality", key: "lowQuality", value: false},
 		];
 
 		for (option in options) {
@@ -94,12 +96,9 @@ class Options extends MusicBeatSubState {
 	}
 
 	public static function CheckDefaults() {
-		for (key => value in defaultOptions) {
-			if (Reflect.getProperty(FlxG.save.data, key) == null) {
-				trace("Setting '" + key + "' is null. Setting to default value: " + value);
+		for (key => value in defaultOptions)
+			if (Reflect.getProperty(FlxG.save.data, key) == null)
 				Reflect.setProperty(FlxG.save.data, key, value);
-			}
-		}
 	}
 
 	override public function update(elapsed:Float):Void {

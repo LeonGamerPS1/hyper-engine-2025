@@ -1,5 +1,7 @@
 package;
 
+import backend.AlsoftConfig.ALSoftConfig;
+import lime.app.Application;
 import flixel.FlxG;
 import flixel.math.FlxRect;
 import flixel.math.FlxPoint;
@@ -26,6 +28,7 @@ class Main extends Sprite {
 		super();
 		PolymodHandler.init();
 		DiscordClient.init();
+		ALSoftConfig.init();
 
 		addChild(new FlxGame(0, 0, Title));
 		addChild(fpsVar);
@@ -40,5 +43,9 @@ class Main extends Sprite {
 
 		PlayerSettings.init();
 		Options.CheckDefaults();
+
+		#if web
+		Application.current.window.element.style.setProperty("image-rendering", "pixelated");
+		#end
 	}
 }

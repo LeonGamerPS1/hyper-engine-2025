@@ -131,7 +131,6 @@ class Paths {
 	}
 
 	inline static public function audioStream(key:String) {
-	
 		var vorbis = VorbisFile.fromFile(key);
 
 		var buffer = AudioBuffer.fromVorbisFile(vorbis);
@@ -218,6 +217,12 @@ class Paths {
 
 	public static inline function getSparrowAtlas(key:String) {
 		return FlxAtlasFrames.fromSparrow(image('$key'), xml('$key'));
+	}
+
+	inline static public function getPackerAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames {
+		var imageLoaded:FlxGraphic = image(key, library, allowGPU);
+
+		return FlxAtlasFrames.fromSpriteSheetPacker(imageLoaded, getPath('images/$key.txt', TEXT));
 	}
 
 	public static inline function getFlxAnimatePath(key:String) {

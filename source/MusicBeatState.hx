@@ -3,7 +3,6 @@ package;
 import flixel.addons.ui.FlxUIState;
 import Conductor.BPMChangeEvent;
 
-
 class MusicBeatState extends FlxUIState {
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
@@ -13,6 +12,8 @@ class MusicBeatState extends FlxUIState {
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
+
+	public var stages:Array<BaseStage> = [];
 
 	override function update(elapsed:Float) {
 		// everyStep();
@@ -46,7 +47,6 @@ class MusicBeatState extends FlxUIState {
 		}
 
 		curStep = lastChange.stepTime + Math.floor((Conductor.songPosition - lastChange.songTime) / Conductor.stepCrochet);
-
 		totalSection = lastChange.stepTime + Math.floor((Conductor.songPosition - lastChange.songTime) / (Conductor.crochet * 4));
 	}
 
@@ -55,7 +55,25 @@ class MusicBeatState extends FlxUIState {
 			beatHit();
 	}
 
-	public function beatHit():Void {}
+	public function beatHit():Void {
+		stagesFunc(function(stage:BaseStage) {
+			stage.beatHit();
+		});
+	}
+
+	public function stagesFunc(?func:(stage:BaseStage) -> Void) {
+		if (func == null)
+			return;
+		for (i in 0...stages.length) {
+			var stage:BaseStage = stages[i];
+			func(stage);
+		}
+	}
 
 	public function sectionHit():Void {}
+
+	public function addStage(stage:BaseStage) {
+		if (!stages.contains(stage))
+			stages.push(stage);
+	}
 }
