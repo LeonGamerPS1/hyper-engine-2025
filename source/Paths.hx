@@ -117,6 +117,10 @@ class Paths {
 		return getPath('data/$key.txt', TEXT, library);
 	}
 
+	inline static public function week(key:String, ?library:String) {
+		return getPath('weeks/$key.json', TEXT, library);
+	}
+
 	inline static public function video(key:String, ?library:String) {
 		return getPath('videos/$key.mp4', TEXT, library);
 	}
@@ -127,7 +131,7 @@ class Paths {
 
 	inline static public function voices(key:String) {
 		key = key.toLowerCase();
-		return 'assets/music/$key/Voices$sound_ext';
+		return getPath('songs/$key/Voices.ogg', SOUND);
 	}
 
 	inline static public function audioStream(key:String) {
@@ -139,7 +143,7 @@ class Paths {
 
 	inline static public function inst(key:String) {
 		key = key.toLowerCase();
-		return 'assets/music/$key/Inst$sound_ext';
+		return getPath('songs/$key/Inst.ogg', SOUND);
 	}
 
 	inline static public function json(key:String, ?library:String) {
@@ -191,7 +195,7 @@ class Paths {
 	}
 
 	static public function image(key:String, ?library:String, ?allowGPU:Bool = true) {
-		#if (desktop)
+		#if (desktop && !hl)
 		var bitmap:BitmapData = null;
 		var file:String = null;
 
@@ -220,7 +224,7 @@ class Paths {
 	}
 
 	inline static public function getPackerAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames {
-		var imageLoaded:FlxGraphic = image(key, library, allowGPU);
+		var imageLoaded = image(key, library, allowGPU);
 
 		return FlxAtlasFrames.fromSpriteSheetPacker(imageLoaded, getPath('images/$key.txt', TEXT));
 	}
@@ -234,4 +238,12 @@ class Paths {
 		return sys.io.File.getBytes(path);
 	}
 	#end
+
+	public static function shaderFrag(key:String) {
+		return getPath('shaders/$key.frag', TEXT);
+	}
+
+	public static function formatSongName(s:String):String {
+		return s.toLowerCase().replace(" ", "-");
+	}
 }

@@ -31,9 +31,11 @@ class HScript {
 		set('FlxTween', flixel.tweens.FlxTween);
 		set('Conductor', Conductor);
 		set('FlxG', FlxG);
+		
 		set('Math', Math);
         set('Note', Note);
         interp.execute(ast);
+		
 	}
 
 	public function call(func:String, ?var1, ?var2, ?var3) {

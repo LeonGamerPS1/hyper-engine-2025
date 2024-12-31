@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.math.FlxMath;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.util.FlxColor;
@@ -29,17 +30,17 @@ class Bar extends FlxTypedSpriteGroup<FlxSprite> {
 		setBounds(boundX, boundY);
 
 		bg = new FlxSprite().loadGraphic(Paths.image(image));
-	//	bg.antialiasing = ClientPrefs.data.antialiasing;
+		bg.antialiasing = FlxG.save.data.antialias;
 		barWidth = Std.int(bg.width - 6);
 		barHeight = Std.int(bg.height - 6);
 
 		leftBar = new FlxSprite().makeGraphic(Std.int(bg.width), Std.int(bg.height), FlxColor.WHITE);
 		// leftBar.color = FlxColor.WHITE;
-		//leftBar.antialiasing = antialiasing = ClientPrefs.data.antialiasing;
+		leftBar.antialiasing = antialiasing = FlxG.save.data.antialias;
 
 		rightBar = new FlxSprite().makeGraphic(Std.int(bg.width), Std.int(bg.height), FlxColor.WHITE);
 		rightBar.color = FlxColor.BLACK;
-	//	rightBar.antialiasing = ClientPrefs.data.antialiasing;
+		rightBar.antialiasing = FlxG.save.data.antialias;
 
 		add(leftBar);
 		add(rightBar);

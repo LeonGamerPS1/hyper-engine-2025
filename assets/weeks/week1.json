@@ -1,0 +1,25 @@
+{
+  "weekImage": "week1",
+  "weekBefore": "tutorial",
+  "displayText": "Her Father",
+	"startUnlocked": true,
+  "order": 1,
+  "difficulties": ["Easy", "Normal", "Hard"],
+  "songs": [
+    {
+      "name": "Bopeebo",
+      "freeplayIcon": "dad",
+      "color": [146, 113, 253]
+    },
+    {
+      "name": "Fresh",
+      "freeplayIcon": "dad",
+      "color": [146, 113, 253]
+    },
+    {
+      "name": "Dad-Battle",
+      "freeplayIcon": "dad",
+      "color": [146, 113, 253]
+    }
+  ]
+}

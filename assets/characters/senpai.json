@@ -2,6 +2,7 @@
     "name": "senpai",
     "texture_path": "senpai",
     "health_icon": "senpai-pixel",
+    "antialiasing": false,
     "health_colors": [
         128,
         0,

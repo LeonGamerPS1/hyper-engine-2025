@@ -1,5 +1,6 @@
 package;
 
+import android.AndroidControls;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.FlxCamera;
 import flixel.FlxState;
@@ -21,11 +22,13 @@ class Options extends MusicBeatSubState {
 		"downScroll" => false,
 		"cpuControlled" => false,
 		"lowQuality" => false,
+		"antialias" => true
+		#if sys, "loading" => true, #end
 	];
 
 	override public function create():Void {
 		super.create();
-		FlxG.camera.alpha = 0.3;
+		FlxG.camera.alpha = 0.5;
 
 		// Initialize options
 		options = [
@@ -36,6 +39,10 @@ class Options extends MusicBeatSubState {
 			{label: "Down-Scroll", key: "downScroll", value: false},
 			{label: "Botplay", key: "cpuControlled", value: false},
 			{label: "Low-Quality", key: "lowQuality", value: false},
+			{label: "Anti-Aliasing", key: "antialias", value: false}
+			#if sys
+			, {label: "Preload Assets", key: "loading", value: false},
+			#end
 		];
 
 		for (option in options) {
@@ -62,6 +69,8 @@ class Options extends MusicBeatSubState {
 		}
 
 		updateSelected(); // Highlight the initially selected option
+		if (AndroidControls.isEnabled)
+			add(AndroidControls.createVirtualPad(UP_DOWN, A_B));
 		cameras = [cam];
 		FlxG.cameras.add(cam, false);
 	}
@@ -105,18 +114,18 @@ class Options extends MusicBeatSubState {
 		super.update(elapsed);
 
 		// Navigate up and down
-		if (FlxG.keys.justPressed.UP) {
+		if (controls.UI_UP_P) {
 			selectedIndex = (selectedIndex - 1 + options.length) % options.length; // Wrap around
 			updateSelected();
 			FlxG.sound.play(Paths.sound('scrollMenu'), 1, false);
-		} else if (FlxG.keys.justPressed.DOWN) {
+		} else if (controls.UI_DOWN_P) {
 			selectedIndex = (selectedIndex + 1) % options.length; // Wrap around
 			updateSelected();
 			FlxG.sound.play(Paths.sound('scrollMenu'), 1, false);
 		}
 
 		// Toggle selected option
-		if (FlxG.keys.justPressed.ENTER) {
+		if (controls.ACCEPT) {
 			toggleOption();
 			FlxG.sound.play(Paths.sound('confirmMenu'), 1, false);
 		}

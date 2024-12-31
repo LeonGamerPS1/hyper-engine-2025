@@ -1,0 +1,25 @@
+{
+  "weekImage": "week6",
+  "displayText": "hating simulator ft. moawling",
+  "weekBefore": "week5",
+  "startUnlocked": true,
+  "order": 6,
+  "difficulties": ["Easy", "Normal", "Hard"],
+  "songs": [
+    {
+      "name": "Senpai",
+      "freeplayIcon": "senpai-pixel",
+      "color": [255, 120, 191]
+    },
+    {
+      "name": "Roses",
+      "freeplayIcon": "senpai-pixel",
+      "color": [255, 120, 191]
+    },
+    {
+      "name": "Thorns",
+      "freeplayIcon": "spirit-pixel",
+      "color": [255, 120, 191]
+    }
+  ]
+}

@@ -7,17 +7,18 @@ class BaseStage extends FlxBasic {
 	var parent:FlxState;
 
 	public function new(parentState:FlxState, autoCreate:Bool = false) {
-        super();
+		super();
 		parent = parentState;
 		if (parent is MusicBeatState)
-			cast(parent,MusicBeatState).addStage(this);
-        parent.add(this);
+			cast(parent, MusicBeatState).addStage(this);
+		parent.add(this);
 
 		if (autoCreate == true)
 			create();
 	}
 
 	public function create() {}
+
 	public function createPost() {}
 
 	public function add(basic:FlxBasic) {
@@ -30,7 +31,18 @@ class BaseStage extends FlxBasic {
 			parent.remove(basic);
 	}
 
+	public function setDefaultGF(name:String) // Fix for the Chart Editor on Base Game stages
+	{
+		var gfVersion:String = PlayState.SONG.gfVersion;
+		if (gfVersion == null || gfVersion.length < 1) {
+			gfVersion = name;
+			PlayState.SONG.gfVersion = gfVersion;
+		}
+	}
+
 	public function stepHit() {}
+
 	public function beatHit() {}
+
 	public function sectionHit() {}
 }

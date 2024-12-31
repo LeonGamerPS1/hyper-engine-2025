@@ -1,0 +1,25 @@
+{
+  "weekImage": "week5",
+  "displayText": "RED SNOW",
+  "weekBefore": "week4",
+  "startUnlocked": true,
+  "order": 5,
+  "difficulties": ["Easy", "Normal", "Hard"],
+  "songs": [
+    {
+      "name": "Cocoa",
+      "freeplayIcon": "parents",
+      "color": [160, 209, 255]
+    },
+    {
+      "name": "Eggnog",
+      "freeplayIcon": "parents",
+      "color": [160, 209, 255]
+    },
+    {
+      "name": "Winter Horrorland",
+      "freeplayIcon": "monster",
+      "color": [160, 209, 255]
+    }
+  ]
+}

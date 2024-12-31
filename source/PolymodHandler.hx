@@ -1,12 +1,12 @@
 package;
 
+import backend.WeekData;
 import firetongue.FireTongue;
 import polymod.Polymod;
 import polymod.format.ParseRules.TextFileFormat;
 import polymod.fs.ZipFileSystem;
 
-class PolymodHandler
-{
+class PolymodHandler {
 	static final MOD_FOLDER:String =
 		#if (REDIRECT_ASSETS_FOLDER && macos)
 		'../../../../../../../example_mods'
@@ -30,12 +30,10 @@ class PolymodHandler
 	// Use SysZipFileSystem on desktop and MemoryZipFilesystem on web.
 	static var modFileSystem:Null<ZipFileSystem> = null;
 
-	public static function init(?framework:Null<Framework>)
-	{
+	public static function init(?framework:Null<Framework>) {
 		var dirs:Array<String> = [];
 		var polyMods = Polymod.scan({modRoot: './mods/'});
-		for (i in 0...polyMods.length)
-		{
+		for (i in 0...polyMods.length) {
 			var value = polyMods[i];
 			dirs.push(value.modPath.split("./mods/")[1]);
 			loadedModIds.push(value.id);
@@ -56,13 +54,11 @@ class PolymodHandler
 		forceReloadAssets();
 	}
 
-	public static function createModRoot():Void
-	{
+	public static function createModRoot():Void {
 		FileUtil.createDirIfNotExists(MOD_FOLDER);
 	}
 
-	static function buildParseRules():polymod.format.ParseRules
-	{
+	static function buildParseRules():polymod.format.ParseRules {
 		var output:polymod.format.ParseRules = polymod.format.ParseRules.getDefault();
 		// Ensure TXT files have merge support.
 		output.addType('txt', TextFileFormat.LINES);
@@ -78,8 +74,8 @@ class PolymodHandler
 		return output;
 	}
 
-	public static function forceReloadAssets():Void
-	{
+	public static function forceReloadAssets():Void {
+		WeekData.reload();
 		Polymod.clearScripts();
 		Polymod.registerAllScriptClasses();
 	}

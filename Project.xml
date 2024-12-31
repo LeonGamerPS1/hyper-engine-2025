@@ -30,7 +30,7 @@
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
 
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
+	<window if="mobile" orientation="landscape" fullscreen="true" width="1280" height="720" />
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
@@ -43,7 +43,7 @@
 
 	<haxelib name="flixel" />
 	<haxelib name="polymod" />
-	<haxelib name="hxdiscord_rpc" if="cpp" />
+	<haxelib name="hxdiscord_rpc" if="cpp" unless="mobile" />
 	<haxelib name="hldiscord_rpc" if="hl" />
 	<haxelib name="firetongue" />
 	<!--In
@@ -58,6 +58,8 @@
 	<!--In
 	case you want to use the ui package-->
 	<haxelib name="flixel-ui" />
+
+
 
 	<!--In
 	case you want to use nape with flixel-->

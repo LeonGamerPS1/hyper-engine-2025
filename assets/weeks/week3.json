@@ -1,0 +1,25 @@
+{
+  "weekImage": "week3",
+  "weekBefore": "week2",
+  "displayText": "PICO",
+  "startUnlocked": true,
+  "order": 3,
+  "difficulties": ["Easy", "Normal", "Hard"],
+  "songs": [
+    {
+      "name": "Pico",
+      "freeplayIcon": "pico",
+      "color": [148, 22, 83]
+    },
+    {
+      "name": "Philly Nice",
+      "freeplayIcon": "pico",
+      "color": [148, 22, 83]
+    },
+    {
+      "name": "Blammed",
+      "freeplayIcon": "pico",
+      "color": [148, 22, 83]
+    }
+  ]
+}

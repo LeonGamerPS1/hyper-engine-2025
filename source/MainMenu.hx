@@ -1,4 +1,6 @@
 package;
+
+import android.AndroidControls;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -10,7 +12,6 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-
 
 class MainMenu extends MusicBeatState {
 	var items = ["story_mode", "freeplay", "options"];
@@ -69,6 +70,8 @@ class MainMenu extends MusicBeatState {
 		add(versionShit);
 
 		changeItem();
+		if (AndroidControls.isEnabled)
+			add(AndroidControls.createVirtualPad(UP_DOWN, A_B));
 	}
 
 	override function update(elapsed:Float):Void {
@@ -113,13 +116,16 @@ class MainMenu extends MusicBeatState {
 
 							switch (daChoice) {
 								case 'story_mode':
-                                    	FlxG.sound.music.stop();
-                                        Conductor.songPosition = -10;
+									FlxG.sound.music.stop();
+									Conductor.songPosition = -10;
 									FlxG.switchState(new PlayState());
-								
+
 								case 'freeplay':
-									openSubState(new Freeplay());
-                                case 'options':
+									FlxG.sound.music.stop();
+									Conductor.songPosition = 0;
+									FlxG.switchState(new SongSel());
+
+								case 'options':
 									openSubState(new Options());
 							}
 						});

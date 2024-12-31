@@ -2,6 +2,7 @@
     "name": "gf-pixel",
     "texture_path": "gfPixel",
     "health_icon": "gf",
+    "antialiasing": false,
     "health_colors": [
         128,
         0,

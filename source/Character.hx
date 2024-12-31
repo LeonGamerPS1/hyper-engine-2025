@@ -17,8 +17,11 @@ typedef CharacterData = {
 	var scale:Null<Float>;
 	var dancer:Null<Bool>;
 	var singDuration:Null<Float>;
+
 	@:optional var camera_position:Array<Float>;
 	@:optional var position:Array<Float>;
+
+	@:optional var antialiasing:Null<Bool>;
 }
 
 typedef AnimationData = {
@@ -60,6 +63,8 @@ class Character extends FlxSprite {
 			json = parseShit('assets/characters/$charName.json');
 		else
 			json = fallback();
+
+		
 
 		if (json.dancer != null)
 			dancer = json.dancer;
@@ -112,7 +117,8 @@ class Character extends FlxSprite {
 			scale.set(json.scale, json.scale);
 		if (json.flipX != null)
 			flipX = (json.flipX != isPlayer);
-
+		if (json.antialiasing != null)
+			antialiasing = FlxG.save.data.antialias ? json.antialiasing : false;
 		updateHitbox();
 
 		for (i in 0...json.animations.length) {

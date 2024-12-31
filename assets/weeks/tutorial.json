@@ -1,0 +1,15 @@
+{
+  "weekImage": "week1",
+  "displayText": "LEARN HOW TO FUNK",
+  "weekBefore": "tutorial",
+  "order": 0,
+  "startUnlocked": true,
+  "difficulties": ["Easy", "Normal", "Hard"],
+  "songs": [
+    {
+      "name": "Tutorial",
+      "freeplayIcon": "gf",
+      "color": [165, 0, 77]
+    }
+  ]
+}

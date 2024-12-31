@@ -1,0 +1,25 @@
+{
+  "weekImage": "week4",
+  "weekBefore": "week3",
+  "displayText": "MOMMY MUST MURDER",
+  "startUnlocked": true,
+  "order": 4,
+  "difficulties": ["Easy", "Normal", "Hard"],
+  "songs": [
+    {
+      "name": "Satin Panties",
+      "freeplayIcon": "mom",
+      "color": [252, 150, 215]
+    },
+    {
+      "name": "High",
+      "freeplayIcon": "mom",
+      "color": [252, 150, 215]
+    },
+    {
+      "name": "Milf",
+      "freeplayIcon": "mom",
+      "color": [252, 150, 215]
+    }
+  ]
+}

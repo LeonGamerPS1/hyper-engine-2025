@@ -1,9 +1,12 @@
 package;
 
+import flixel.FlxG;
+import openfl.system.System;
 import flixel.addons.ui.FlxUIState;
 import Conductor.BPMChangeEvent;
+import backend.FunkinState;
 
-class MusicBeatState extends FlxUIState {
+class MusicBeatState extends FunkinState {
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 	private var totalSection:Int = 0;
@@ -15,8 +18,11 @@ class MusicBeatState extends FlxUIState {
 
 	public var stages:Array<BaseStage> = [];
 
+	var loops:Float = 30;
+
 	override function update(elapsed:Float) {
 		// everyStep();
+
 		var oldStep:Int = curStep;
 		var oldSection:Int = totalSection;
 		updateCurStep();
@@ -53,6 +59,7 @@ class MusicBeatState extends FlxUIState {
 	public function stepHit():Void {
 		if (curStep % 4 == 0)
 			beatHit();
+		System.gc();
 	}
 
 	public function beatHit():Void {

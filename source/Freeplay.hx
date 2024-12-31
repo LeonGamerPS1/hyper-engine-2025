@@ -1,5 +1,6 @@
 package;
 
+import android.AndroidControls;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -44,6 +45,9 @@ class Freeplay extends MusicBeatSubState {
 		FlxTween.tween(fuckyBlueBall, {x: 0}, 0.0001, {ease: FlxEase.sineInOut});
 		FlxTween.tween(leftBar, {x: 0}, 1.2, {ease: FlxEase.sineInOut});
 		FlxTween.tween(rightBar, {x: rightBar.x - FlxG.width / 2}, 1.2, {ease: FlxEase.sineInOut});
+
+		if (AndroidControls.isEnabled)
+			add(AndroidControls.createVirtualPad(UP_DOWN, A_B)).cameras = [funnyCamera];
 	}
 
 	override function update(elapsed:Float) {

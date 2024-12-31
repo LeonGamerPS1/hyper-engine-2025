@@ -1,18 +1,11 @@
 package;
 
-import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileCircle;
+import flixel.addons.transition.FlxTransitionableState;
+import backend.DiscordClient;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileSquare;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.addons.transition.TransitionData;
-import flixel.graphics.FlxGraphic;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-
-
 
 class Title extends MusicBeatState {
 	public var fatRamEater:FlxSprite;
@@ -20,11 +13,17 @@ class Title extends MusicBeatState {
 	public var logoBl:FlxSprite;
 	public var fuckingtomain:Bool = false;
 
+	public var Note:Note = new Note();
+	public var sustain:Sustain;
+	public var strumTime:Float = 100;
+	public var receptor:Receptor;
+
 	public override function create() {
+		FlxTransitionableState.skipNextTransIn = true;
+		DiscordClient.changePresence("Title Screen");
 		Conductor.changeBPM(102);
 		FlxG.sound.playMusic(Paths.sound('freakyMenu'));
 
-		
 		fatRamEater = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
 		fatRamEater.frames = Paths.getSparrowAtlas('title/gfDanceTitle');
 		fatRamEater.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
@@ -53,6 +52,26 @@ class Title extends MusicBeatState {
 
 		super.create();
 		FlxG.camera.flash();
+
+		receptor = new Receptor(0);
+		add(receptor);
+		receptor.x += receptor.width / 2;
+		Note.targetReceptor = receptor;
+		Note.isPixel = true;
+		add(Note);
+		Note.followStrumNote(receptor, 0, 2);
+		PlayState.SONG = Song.loadFromJson('tutorial', 'tutorial');
+		var prevNote:Note = Note;
+		for (i in 0...4) {
+			var note:Note = new Note(receptor.x + 50, 0, true, prevNote, true, false);
+			note.alpha = 1;
+			note.x = receptor.x + 50;
+
+			note.y = Note.y + (note.height * i);
+			add(note);
+			prevNote = note;
+			// prevNote.offset.x -= 50;
+		}
 	}
 
 	public var danceLeft(get, null):Bool;
@@ -74,10 +93,23 @@ class Title extends MusicBeatState {
 	override function update(elapsed:Float) {
 		Conductor.songPosition = FlxG.sound.music.time;
 		super.update(elapsed);
-		if (controls.ACCEPT && !fuckingtomain) {
+		var pressedEnter:Bool = (controls.ACCEPT || tappedScreen());
+		if (pressedEnter && !fuckingtomain) {
 			fuckingtomain = true;
 			yay();
 		}
+	}
+
+	function tappedScreen() {
+		#if mobile
+		var touch = FlxG.touches.getFirst();
+		if (touch != null)
+			return touch.justPressed;
+		else
+			return false;
+		#else
+		return false;
+		#end
 	}
 
 	function yay() {

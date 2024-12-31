@@ -1,6 +1,5 @@
 package;
 
-import flixel.util.FlxColor;
 import openfl.utils.Assets;
 import flixel.FlxSprite;
 
@@ -41,6 +40,7 @@ class HealthIcon extends FlxSprite {
 	public function changeIcon(newChar:String):Void {
 		if (newChar != char) {
 			if (animation.getByName(newChar) == null) {
+				var path = Paths.img('icons/icon-' + newChar);
 				if (Assets.exists(Paths.img('icons/icon-' + newChar)))
 					loadGraphic(Paths.image('icons/icon-' + newChar), true, 150, 150);
 				else {

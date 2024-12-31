@@ -1,5 +1,6 @@
 package effects;
 
+import effects.shaders.Pixelate;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -19,13 +20,16 @@ class NoteSplash extends FlxSprite {
 		animation.addByPrefix('note3-1', 'note impact 2 red', 24, false);
 
 		setupNoteSplash(x, y, noteData);
+		antialiasing = FlxG.save.data.antialias;
 
 		// alpha = 0.75;
 	}
 
-	public function setupNoteSplash(x:Float, y:Float, noteData:Int = 0) {
+	public function setupNoteSplash(x:Float, y:Float, noteData:Int = 0,?pixel:Bool = false) {
+		if(pixel && shader == null)
+			this.shader = new Pixelate();
 		setPosition(x, y);
-		alpha = 0.6;
+		//alpha = 0.6;
 
 		animation.play('note' + noteData + '-' + FlxG.random.int(0, 1), true);
 		animation.curAnim.frameRate += FlxG.random.int(-2, 2);

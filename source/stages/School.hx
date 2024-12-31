@@ -1,5 +1,6 @@
 package stages;
 
+
 import flixel.util.FlxTimer;
 import flixel.FlxSprite;
 import flixel.FlxG;
@@ -10,6 +11,7 @@ class School extends BaseStage {
 	var bgGirls:BackgroundGirls;
 
 	override function create() {
+		setDefaultGF('gf-pixel');
 		var bgSky:BGSprite = new BGSprite('weeb/weebSky', 0, 0, 0.1, 0.1);
 		add(bgSky);
 		bgSky.antialiasing = false;
@@ -67,11 +69,14 @@ class School extends BaseStage {
 
 		var songName = PlayState.SONG.song.toLowerCase().replace(" ", "-");
 		switch (songName) {
-			case 'dreams-of-roses':
+			case 'dreams-of-roses' | 'roses':
 				new FlxTimer().start(0.3, function(e) {
 					FlxG.sound.play(Paths.sound('ANGRY_TEXT_BOX'));
 				});
+				if(bgGirls != null)
+				bgGirls.swapDanceType();
 		}
+		
 	}
 
 	override function beatHit() {

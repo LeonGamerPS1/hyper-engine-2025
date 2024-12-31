@@ -2,6 +2,7 @@
     "name": "bf-pixel",
     "texture_path": "bfPixel",
     "health_icon": "bf-pixel",
+    "antialiasing": false,
     "health_colors": [
         128,
         0,

@@ -1,0 +1,25 @@
+{
+  "weekImage": "week2",
+  "weekBefore": "week1",
+  "displayText": "Spooky Month",
+  "startUnlocked": true,
+  "order": 2,
+  "difficulties": ["Easy", "Normal", "Hard"],
+  "songs": [
+    {
+      "name": "Spookeez",
+      "freeplayIcon": "spooky",
+      "color": [34, 51, 68]
+    },
+    {
+      "name": "South",
+      "freeplayIcon": "spooky",
+      "color": [34, 51, 68]
+    },
+    {
+      "name": "Monster",
+      "freeplayIcon": "monster",
+      "color": [34, 51, 68]
+    }
+  ]
+}

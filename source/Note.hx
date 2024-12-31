@@ -1,11 +1,34 @@
 package;
 
+import effects.shaders.RGBPalette;
+import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxRect;
 
+typedef PreloadNote = {
+	var strumTime:Float;
+	var noteData:Int;
+
+	var targetReceptor:Receptor;
+
+	var earlyHitMult:Float;
+	var lateHitMult:Float;
+
+	var mustPress:Bool;
+
+	var wasHit:Bool;
+	var isSustainNote:Bool;
+	var wasGoodHit:Bool;
+	var ignoreNote:Bool;
+
+	var altNote:Bool;
+	var isPixel:Bool;
+}
+
 class Note extends FlxSprite {
+	public static var pixelPerMs:Float = 0.45;
+
 	public var strumTime:Float = 0;
 	public var noteData:Int = 0;
 
@@ -41,21 +64,71 @@ class Note extends FlxSprite {
 	public var isSustainNote:Bool = false;
 	public var multSpeed:Float = 1;
 
-	public function new(strumTime:Float = 0, noteData:Int = 0, isSustainNote:Bool = false, ?prevNote:Note, mustPress:Bool = false, pixelNote:Bool = false) {
+	public var susNote:Float = 0;
+
+	public static var waveThing:Float = 0;
+
+	public var unheldTime:Float;
+
+	public var length(default, set):Float = 0;
+
+	public var sustain(default, set):Sustain;
+	public var targetReceptor:Receptor;
+	public var scrollSpeed:Float = 1;
+	public var texture(default, set):String;
+	public var sustainLength:Float = 0;
+
+	public var rgbShader:RGBShaderReference;
+
+	public static var globalRgbShaders:Array<RGBPalette> = [];
+
+	public static function initializeGlobalRGBShader(noteData:Int,isPixel:Bool = false) {
+		if (globalRgbShaders[noteData] == null) {
+			var newRGB:RGBPalette = new RGBPalette();
+			globalRgbShaders[noteData] = newRGB;
+
+			var arr:Array<FlxColor> = (!isPixel) ? ClientPrefs.data.arrowRGB[noteData] : ClientPrefs.data.arrowRGBPixel[noteData];
+			if (noteData > -1 && noteData <= arr.length) {
+				newRGB.r = arr[0];
+				newRGB.g = arr[1];
+				newRGB.b = arr[2];
+			}
+		}
+		return globalRgbShaders[noteData];
+	}
+
+	function set_sustain(v:Sustain):Sustain {
+		if (v != null)
+			v.parent = this;
+
+		return sustain = v;
+	}
+
+	function set_length(v:Float):Float {
+		return length = Math.max(v, 0);
+	}
+
+	public inline function isHoldWindowLate():Bool {
+		return unheldTime > 1;
+	}
+
+	public function new(strumTime:Float = 0, noteData:Int = 0, isSustainNote:Bool = false, ?prevNote:Note, mustPress:Bool = false, pixelNote:Bool = false,
+			susnote:Float = 0) {
 		super(0, -2000);
+
 		this.strumTime = strumTime;
 		this.noteData = noteData;
 		this.isSustainNote = isSustainNote;
 		this.prevNote = prevNote;
 		this.mustPress = mustPress;
+		this.susNote = susnote;
+		this.isPixel = pixelNote;
+		this.texture = "NOTE_assets";
 
-		if (pixelNote)
-			pixel();
-		else
-			normal();
-		updateHitbox();
-		if (!isSustainNote)
-			animation.play('arrow');
+
+		rgbShader = new RGBShaderReference(this, initializeGlobalRGBShader(noteData,isPixel));
+		
+
 	}
 
 	public function followStrumNote(myStrum:Receptor, fakeCrochet:Float, songSpeed:Float = 1) {
@@ -90,8 +163,20 @@ class Note extends FlxSprite {
 		}
 	}
 
-	function normal() {
-		frames = Paths.getSparrowAtlas("NOTE_assets");
+	public function defaultRGB() {
+		var arr:Array<FlxColor> = ClientPrefs.data.arrowRGB[noteData];
+		if (isPixel)
+			arr = ClientPrefs.data.arrowRGBPixel[noteData];
+
+		if (noteData > -1 && noteData <= arr.length) {
+			rgbShader.r = arr[0];
+			rgbShader.g = arr[1];
+			rgbShader.b = arr[2];
+		}
+	}
+
+	function normal(tex:String = "NOTE_assets") {
+		frames = Paths.getSparrowAtlas(tex);
 		animation.addByPrefix('arrow', '${colArray[noteData % colArray.length]}0');
 		animation.addByPrefix('hold', '${colArray[noteData % colArray.length]} hold piece');
 		animation.addByPrefix('holdend', '${colArray[noteData % colArray.length]} hold end');
@@ -113,12 +198,13 @@ class Note extends FlxSprite {
 		}
 	}
 
-	function pixel() {
+	function pixel(tex:String = "NOTE_assets") {
 		if (isSustainNote) {
-			loadGraphic(Paths.image("pixelUI/pixelends"));
+			loadGraphic(Paths.image('pixelUI/${tex}ENDS'));
 			width = width / 4;
 			height = height / 5;
-			loadGraphic(Paths.image("pixelUI/pixelends"), true, 7, 5);
+
+			loadGraphic(Paths.image('pixelUI/${tex}ENDS'), true, 7, 5);
 
 			antialiasing = false;
 			setGraphicSize(Std.int(width * 6));
@@ -127,8 +213,9 @@ class Note extends FlxSprite {
 			animation.add('holdend', [noteData + 4]);
 
 			if (prevNote != null) {
-			//	multAlpha = 0.6;
+				multAlpha = 0.6;
 				offsetX = Note.swagWidth / 2;
+				offsetY = -height / 2;
 				animation.play('holdend');
 				updateHitbox();
 				offsetX -= Note.swagWidth / 4;
@@ -140,10 +227,10 @@ class Note extends FlxSprite {
 				}
 			}
 		} else {
-			loadGraphic(Paths.image("pixelUI/pixelarrow"));
+			loadGraphic(Paths.image('pixelUI/$tex'));
 			width = width / 4;
 			height = height / 5;
-			loadGraphic(Paths.image("pixelUI/pixelarrow"), true, Math.floor(width), Math.floor(height));
+			loadGraphic(Paths.image('pixelUI/$tex'), true, Math.floor(width), Math.floor(height));
 
 			antialiasing = false;
 			setGraphicSize(Std.int(width * 6));
@@ -151,8 +238,14 @@ class Note extends FlxSprite {
 		}
 	}
 
+	public function setupNote() {
+		return this;
+	}
+
 	override function update(elapsed:Float) {
 		super.update(elapsed);
+		if (isHoldable() && sustain != null && sustain.exists && sustain.active)
+			sustain.update(elapsed);
 
 		if (mustPress) {
 			// ok river
@@ -168,10 +261,13 @@ class Note extends FlxSprite {
 			canBeHit = false;
 
 			if (strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult)) {
-				if ((isSustainNote && prevNote.wasGoodHit) || strumTime <= Conductor.songPosition)
+				if (strumTime <= Conductor.songPosition || isSustainNote && prevNote.wasGoodHit)
 					wasGoodHit = true;
 			}
 		}
+
+		if (tooLate)
+			alpha = 0.3;
 	}
 
 	public function clipToStrumNote(myStrum:Receptor) {
@@ -196,5 +292,35 @@ class Note extends FlxSprite {
 		}
 	}
 
+	/**
+	 * Returns whether this note can be held.
+	 * @return Bool
+	 */
+	public inline function isHoldable():Bool {
+		return length > 0;
+	}
 
+	function set_texture(value:String):String {
+		reloadNote(value);
+
+		return texture = value;
+	}
+
+	function reloadNote(tex:String = "NOTE_assets") {
+		if (isPixel == false)
+			normal(tex);
+		else
+			pixel(tex);
+
+		x += Note.swagWidth / 2;
+		if (!isSustainNote)
+			animation.play('arrow'); // fix because fuck you
+		updateHitbox();
+	}
+
+	override function set_clipRect(rect:FlxRect):FlxRect {
+		if (frames != null)
+			frame = frames.frames[animation.frameIndex];
+		return clipRect = rect;
+	}
 }

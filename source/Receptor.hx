@@ -1,5 +1,8 @@
 package;
 
+import effects.shaders.RGBPalette.RGBShaderReference;
+import flixel.math.FlxRect;
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 
@@ -11,27 +14,28 @@ class Receptor extends FlxSprite {
 
 	public var sustainReduce:Bool = true;
 	public var direction:Float = 90;
+	public var texture(default, set):String;
+	public var isPixel:Bool = false;
+
+	public var rgbShader:RGBShaderReference;
 
 	public static var colArray:Array<String> = ["arrowLEFT", "arrowDOWN", "arrowUP", "arrowRIGHT"];
 
 	public function new(noteData:Int = 0, isPixel:Bool = false) {
 		super(0, 50);
 		this.noteData = noteData;
-		if (isPixel == false)
-			normal();
-		else
-			pixel();
-
-		x += Note.swagWidth / 2;
-		playAnim('static');
-		updateHitbox();
+		this.isPixel = isPixel;
+		
+		texture = "NOTE_assets";
+		rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(noteData,isPixel));
+		playAnim('static',true);
 	}
 
-	function pixel() {
-		loadGraphic(Paths.image("pixelUI/pixelarrow"));
+	function pixel(tex:String = "NOTE_assets") { 
+		loadGraphic(Paths.image('pixelUI/$tex'));
 		width = width / 4;
 		height = height / 5;
-		loadGraphic(Paths.image("pixelUI/pixelarrow"), true, Math.floor(width), Math.floor(height));
+		loadGraphic(Paths.image('pixelUI/$tex'), true, Math.floor(width), Math.floor(height));
 
 		antialiasing = false;
 		setGraphicSize(Std.int(width * 6));
@@ -60,33 +64,54 @@ class Receptor extends FlxSprite {
 		}
 	}
 
-	function normal() {
-		frames = Paths.getSparrowAtlas("NOTE_assets");
+	function normal(tex:String = "NOTE_assets") {
+		frames = Paths.getSparrowAtlas(tex);
 		animation.addByPrefix('static', '${colArray[noteData % colArray.length]}0');
 		animation.addByPrefix('pressed', '${colArray[noteData % colArray.length].split("arrow")[1].toLowerCase()} press', 24, false);
 		animation.addByPrefix('confirm', '${colArray[noteData % colArray.length].split("arrow")[1].toLowerCase()} confirm', 24, false);
 
 		setGraphicSize(width * 0.7);
 
-		antialiasing = true;
+		antialiasing = FlxG.save.data.antialias;
 	}
 
 	override function update(elapsed:Float) {
 		if (resetAnim > 0) {
 			resetAnim -= elapsed;
 			if (resetAnim <= 0) {
-				playAnim('static');
+				playAnim('static',true);
 				resetAnim = 0;
 			}
 		}
 		super.update(elapsed);
 	}
 
-	public function playAnim(anim:String, ?force:Bool = false) {
+	public function playAnim(anim:String = 'static', ?force:Bool = false) {
 		animation.play(anim, force);
+
+		if (rgbShader != null)
+		rgbShader.enabled = anim != 'static';
 		if (animation.curAnim != null) {
 			centerOffsets();
 			centerOrigin();
 		}
 	}
+
+	function set_texture(value:String):String {
+		reloadNote(value);
+
+		return texture = value;
+	}
+	function reloadNote(tex:String = "NOTE_assets") {
+		if (isPixel == false)
+			normal(tex);
+		else
+			pixel(tex);
+
+		x += Note.swagWidth / 2;
+		playAnim('static');
+		updateHitbox();
+		
+	}
+	
 }
