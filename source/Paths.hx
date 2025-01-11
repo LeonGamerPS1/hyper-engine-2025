@@ -82,6 +82,7 @@ class Paths {
 		}
 		var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, file);
 		newGraphic.persist = true;
+		newGraphic.bitmap.disposeImage();
 		newGraphic.destroyOnNoUse = false;
 		currentTrackedAssets.set(file, newGraphic);
 		return newGraphic;
@@ -159,7 +160,7 @@ class Paths {
 	}
 
 	inline static public function music(key:String, ?library:String) {
-		return getPath('music/$key.$sound_ext', MUSIC, library);
+		return getPath('music/$key$sound_ext', MUSIC, library);
 	}
 
 	public static function getPath(file:String, type:AssetType, ?library:Null<String>) {

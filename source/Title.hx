@@ -57,21 +57,13 @@ class Title extends MusicBeatState {
 		add(receptor);
 		receptor.x += receptor.width / 2;
 		Note.targetReceptor = receptor;
+		Note.x = receptor.x;
 		Note.isPixel = true;
 		add(Note);
-		Note.followStrumNote(receptor, 0, 2);
-		PlayState.SONG = Song.loadFromJson('tutorial', 'tutorial');
-		var prevNote:Note = Note;
-		for (i in 0...4) {
-			var note:Note = new Note(receptor.x + 50, 0, true, prevNote, true, false);
-			note.alpha = 1;
-			note.x = receptor.x + 50;
-
-			note.y = Note.y + (note.height * i);
-			add(note);
-			prevNote = note;
-			// prevNote.offset.x -= 50;
-		}
+		Note.y  = receptor.y + 200;
+		//PlayState.SONG = Song.loadFromJson('tutorial', 'tutorial');
+		sustain = new Sustain(Note);
+		add(sustain);
 	}
 
 	public var danceLeft(get, null):Bool;

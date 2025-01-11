@@ -11,7 +11,7 @@ import flixel.FlxSprite;
 class PauseSubState extends MusicBeatSubState {
 	var cam:FlxCamera;
 
-	public var menuItemsOG:Array<String> = ["Resume", "Restart", "Chart Editor", "Back"];
+	public var menuItemsOG:Array<String> = ["Resume", "Restart", "Chart Editor","Botplay", "Back"];
 	public var items:FlxTypedGroup<Alphabet> = new FlxTypedGroup<Alphabet>();
 	public var curSel:Int = 0;
 	public var introDone:Bool = false;
@@ -58,9 +58,13 @@ class PauseSubState extends MusicBeatSubState {
 					close();
 					if (PlayState.instance != null)
 						PlayState.instance.unpause();
+			
 				case "Restart":
 					FlxG.resetState();
 
+				case "Botplay":
+					if (PlayState.instance != null)
+						PlayState.instance.cpuControlled = !PlayState.instance.cpuControlled;	
 				case "Chart Editor":
 					FlxG.switchState(new editors.ChartEditorState());
 				case "Back":

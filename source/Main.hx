@@ -1,11 +1,10 @@
 package;
 
-import loading.Init;
-import display.DebugDisplay;
 import flixel.FlxG;
+import loading.Init;
 import flixel.FlxGame;
 import openfl.display.Sprite;
-
+import openfl.display.FPS;
 #if linux
 @:cppInclude('./external/gamemode_client.h')
 @:cppFileCode('
@@ -13,13 +12,15 @@ import openfl.display.Sprite;
 ')
 #end
 class Main extends Sprite {
-	public static var fpsVar:DebugDisplay = new DebugDisplay(10, 10, 0xFFFFFF);
+	public static var fpsVar:FPS = new FPS(3, 3, 0xFFFFFF);
 
 	public function new() {
 		super();
 
-		addChild(new FlxGame(0, 0, Init, 60, 60, true));
+		addChild(new FlxGame(0, 0, Init));
+		
 		addChild(fpsVar);
+		FlxG.bitmapLog.viewCache();
 	}
 
 	private static function resetSpriteCache(sprite:Sprite):Void {

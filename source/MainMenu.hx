@@ -63,7 +63,7 @@ class MainMenu extends MusicBeatState {
 		add(menuItems);
 		FlxG.camera.follow(camFollow, null, 0);
 
-		var versionShit:FlxText = new FlxText(0, FlxG.height - 20, 0, "Hyper Engine v0.1.0", 12);
+		var versionShit:FlxText = new FlxText(0, FlxG.height - 20, 0, "Hyper Engine v0.2.0", 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat('assets/font/bookantiqua_bold.ttf', 16, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK, true);
 		versionShit.antialiasing = true;
@@ -126,7 +126,7 @@ class MainMenu extends MusicBeatState {
 									FlxG.switchState(new SongSel());
 
 								case 'options':
-									openSubState(new Options());
+									FlxG.switchState(new OptionsMenu());
 							}
 						});
 					}

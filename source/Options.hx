@@ -1,24 +1,17 @@
 package;
 
 import android.AndroidControls;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.FlxCamera;
-import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.FlxG;
 import flixel.util.FlxColor;
 
-class Options extends MusicBeatSubState {
+class Options extends MusicBeatState {
 	private var options:Array<{label:String, key:String, value:Bool}>;
 	private var selectedIndex:Int = 0;
 	private var optionTexts:Array<FlxText>;
-	var cam:FlxCamera = new FlxCamera();
 
 	public static var defaultOptions:Map<String, Bool> = [
 		"splashes" => false,
-		"strumGlowPlr" => true,
-		"strumGlowBot" => true,
-		"strumGlowOpp" => false,
 		"downScroll" => false,
 		"cpuControlled" => false,
 		"lowQuality" => false,
@@ -28,14 +21,10 @@ class Options extends MusicBeatSubState {
 
 	override public function create():Void {
 		super.create();
-		FlxG.camera.alpha = 0.5;
 
 		// Initialize options
 		options = [
 			{label: "Note-Splashes", key: "splashes", value: false},
-			{label: "Player Strums Glow", key: "strumGlowPlr", value: true},
-			{label: "Botplay Strums Glow", key: "strumGlowBot", value: true},
-			{label: "Opponent Strums Glow", key: "strumGlowOpp", value: false},
 			{label: "Down-Scroll", key: "downScroll", value: false},
 			{label: "Botplay", key: "cpuControlled", value: false},
 			{label: "Low-Quality", key: "lowQuality", value: false},
@@ -71,8 +60,6 @@ class Options extends MusicBeatSubState {
 		updateSelected(); // Highlight the initially selected option
 		if (AndroidControls.isEnabled)
 			add(AndroidControls.createVirtualPad(UP_DOWN, A_B));
-		cameras = [cam];
-		FlxG.cameras.add(cam, false);
 	}
 
 	private function getOptionText(option:{label:String, key:String, value:Bool}):String {
@@ -136,14 +123,8 @@ class Options extends MusicBeatSubState {
 				value.destroy();
 				remove(value, true);
 			}
-			cam.kill();
-			cam.destroy();
-			FlxG.cameras.remove(cam, false);
-			FlxG.camera.alpha = 1;
 
-			FlxTransitionableState.skipNextTransOut = true;
-			FlxTransitionableState.skipNextTransIn = true;
-			FlxG.switchState(new MainMenu());
+			FlxG.switchState(new OptionsMenu());
 		}
 	}
 }

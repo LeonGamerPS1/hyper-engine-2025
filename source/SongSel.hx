@@ -1,5 +1,6 @@
 package;
 
+import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
 import backend.WeekFile;
 import backend.WeekData;
@@ -42,10 +43,11 @@ class SongSel extends MusicBeatState {
 	var selSom:Bool = false;
 	var funkyCam:FlxCamera = new FlxCamera();
 	var bg:FlxSprite;
+	var selectionInfo:FlxSpriteGroup;
 
 	override function create():Void {
 		super.create();
-		WeekData.reload(); // for reloading weeks so you dont have to press f5 billions of times
+		PolymodHandler.forceReloadAssets();
 
 		FlxG.cameras.add(funkyCam, false);
 		funkyCam.bgColor.alpha = 0;
@@ -90,6 +92,15 @@ class SongSel extends MusicBeatState {
 		camFollow.screenCenter();
 		FlxG.camera.follow(camFollow, FlxCameraFollowStyle.LOCKON);
 		changeSel();
+
+		selectionInfo = new FlxSpriteGroup(0,0);
+		selectionInfo.cameras = [funkyCam];
+		add(selectionInfo);
+		var back:FlxSprite = new FlxSprite().makeGraphic(FlxG.width + 1 /**it is one pixel short lols thats why + 1**/,50,FlxColor.BLACK); 
+		back.alpha = 0.8;
+		back.updateHitbox();
+		selectionInfo.add(back);
+
 
 		DiscordClient.changePresence("Freeplay");
 

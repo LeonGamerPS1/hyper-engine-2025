@@ -1,13 +1,18 @@
 package loading;
 
+import haxe.io.Path;
 import flixel.util.FlxColor;
 import flixel.FlxSprite;
 import flixel.FlxG;
 import flixel.FlxState;
 
+using StringTools;
+
 class LoadingScreen extends FlxState {
 	var logoBl:FlxSprite;
-    var loadingCircle:LoadingCircle;
+	var loadingCircle:LoadingCircle;
+	var assets:Array<String> = [];
+	var filesLoaded:Int = 0;
 
 	override public function create() {
 		logoBl = new FlxSprite(-150, -100);
@@ -18,12 +23,19 @@ class LoadingScreen extends FlxState {
 		logoBl.scale.set(0.5, 0.5);
 		logoBl.updateHitbox();
 		logoBl.screenCenter();
-        logoBl.y -= logoBl.height / 4;
+		logoBl.y -= logoBl.height / 4;
 		add(logoBl);
 
-        loadingCircle = new LoadingCircle();
-        add(loadingCircle);
+		loadingCircle = new LoadingCircle();
+		add(loadingCircle);
 
 		FlxG.camera.flash(FlxColor.BLACK, 0.4);
+		assets = FileUtil.readDirectory("assets/images", 2).filter(function(e) {
+			return Path.extension(e).toLowerCase().contains("png");
+		});
+
+		trace(assets);
+	
+		FlxG.switchState(new Title());
 	}
 }

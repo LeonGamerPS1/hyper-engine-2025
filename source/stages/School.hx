@@ -1,6 +1,8 @@
 package stages;
 
 
+import effects.shaders.IDK;
+import openfl.filters.ShaderFilter;
 import flixel.util.FlxTimer;
 import flixel.FlxSprite;
 import flixel.FlxG;
@@ -76,12 +78,17 @@ class School extends BaseStage {
 				if(bgGirls != null)
 				bgGirls.swapDanceType();
 		}
-		
+	
 	}
 
 	override function beatHit() {
 		if (bgGirls != null)
 			bgGirls.dance();
+
+	}
+	override  function update(elapsed:Float) {
+	
+		super.update(elapsed);
 	}
 
 	// For events

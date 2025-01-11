@@ -1,10 +1,8 @@
 package;
 
 import effects.shaders.RGBPalette.RGBShaderReference;
-import flixel.math.FlxRect;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 
 class Receptor extends FlxSprite {
 	public var noteData:Int;
@@ -17,34 +15,36 @@ class Receptor extends FlxSprite {
 	public var texture(default, set):String;
 	public var isPixel:Bool = false;
 
+	public static var strumScale:Float = 1;
+
 	public var rgbShader:RGBShaderReference;
 
 	public static var colArray:Array<String> = ["arrowLEFT", "arrowDOWN", "arrowUP", "arrowRIGHT"];
 
 	public function new(noteData:Int = 0, isPixel:Bool = false) {
-		super(0, 50);
+		super(0, 0);
 		this.noteData = noteData;
 		this.isPixel = isPixel;
-		
+
 		texture = "NOTE_assets";
-		rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(noteData,isPixel));
-		playAnim('static',true);
+		rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(noteData, isPixel));
+		playAnim('static', true);
 	}
 
-	function pixel(tex:String = "NOTE_assets") { 
+	function pixel(tex:String = "NOTE_assets") {
 		loadGraphic(Paths.image('pixelUI/$tex'));
 		width = width / 4;
 		height = height / 5;
 		loadGraphic(Paths.image('pixelUI/$tex'), true, Math.floor(width), Math.floor(height));
 
 		antialiasing = false;
-		setGraphicSize(Std.int(width * 6));
+		setGraphicSize(Std.int(width * 6 * strumScale));
 
 		animation.add('green', [6]);
 		animation.add('red', [7]);
 		animation.add('blue', [5]);
 		animation.add('purple', [4]);
-		switch (Math.abs(noteData)) {
+		switch (Math.abs(noteData % 4)) {
 			case 0:
 				animation.add('static', [0]);
 				animation.add('pressed', [4, 8], 24, false);
@@ -70,7 +70,7 @@ class Receptor extends FlxSprite {
 		animation.addByPrefix('pressed', '${colArray[noteData % colArray.length].split("arrow")[1].toLowerCase()} press', 24, false);
 		animation.addByPrefix('confirm', '${colArray[noteData % colArray.length].split("arrow")[1].toLowerCase()} confirm', 24, false);
 
-		setGraphicSize(width * 0.7);
+		setGraphicSize(width * 0.7 * strumScale);
 
 		antialiasing = FlxG.save.data.antialias;
 	}
@@ -79,18 +79,22 @@ class Receptor extends FlxSprite {
 		if (resetAnim > 0) {
 			resetAnim -= elapsed;
 			if (resetAnim <= 0) {
-				playAnim('static',true);
+				playAnim('static', true);
 				resetAnim = 0;
 			}
 		}
 		super.update(elapsed);
 	}
 
+	public function getAnimationName():String {
+		return (animation.curAnim != null ? animation.curAnim.name : null);
+	}
+
 	public function playAnim(anim:String = 'static', ?force:Bool = false) {
 		animation.play(anim, force);
 
 		if (rgbShader != null)
-		rgbShader.enabled = anim != 'static';
+			rgbShader.enabled = anim != 'static';
 		if (animation.curAnim != null) {
 			centerOffsets();
 			centerOrigin();
@@ -102,6 +106,7 @@ class Receptor extends FlxSprite {
 
 		return texture = value;
 	}
+
 	function reloadNote(tex:String = "NOTE_assets") {
 		if (isPixel == false)
 			normal(tex);
@@ -111,7 +116,5 @@ class Receptor extends FlxSprite {
 		x += Note.swagWidth / 2;
 		playAnim('static');
 		updateHitbox();
-		
 	}
-	
 }

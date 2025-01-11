@@ -11,7 +11,7 @@ class MusicBeatState extends FunkinState {
 	private var curBeat:Int = 0;
 	private var totalSection:Int = 0;
 
-	private var controls(get, never):Controls;
+	public var controls(get, never):Controls;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -27,6 +27,9 @@ class MusicBeatState extends FunkinState {
 		var oldSection:Int = totalSection;
 		updateCurStep();
 		updateBeat();
+		stagesFunc(function(stage:BaseStage) {
+			stage.update(elapsed);
+		});
 
 		if (oldStep != curStep && curStep >= 0)
 			stepHit();

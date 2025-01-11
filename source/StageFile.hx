@@ -10,6 +10,7 @@ typedef StageFile = {
    public var cam_gf:Null<Array<Float>>;
 
    public var isPixel:Null<Bool>;
+   public var camSPEED:Null<Float>;
 
    public var defaultCamZoom:Null<Float>;
 }

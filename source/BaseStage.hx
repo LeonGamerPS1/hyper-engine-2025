@@ -40,9 +40,8 @@ class BaseStage extends FlxBasic {
 		}
 	}
 
+	public function updatePost(elapsed:Float) {}
 	public function stepHit() {}
-
 	public function beatHit() {}
-
 	public function sectionHit() {}
 }
