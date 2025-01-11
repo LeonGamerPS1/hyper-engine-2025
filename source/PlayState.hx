@@ -128,6 +128,7 @@ class PlayState extends MusicBeatState {
 	public static var seenCutscene:Bool = false;
 
 	override public function create() {
+		Paths.clearUnusedMemory();
 		instance = this;
 
 		if (SONG == null)
@@ -203,7 +204,6 @@ class PlayState extends MusicBeatState {
 
 		// unspawnNotesCopy = unspawnNotes.copy();
 
-		openfl.system.System.gc();
 		if (AndroidControls.isEnabled)
 			uiGroup.add(AndroidControls.createVirtualPad(FULL, NONE));
 
@@ -226,8 +226,9 @@ class PlayState extends MusicBeatState {
 		//	FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 		moveCameraSection(0);
 		FlxG.camera.focusOn(yes);
-		super.create();
 
+		super.create();
+		openfl.system.System.gc();
 		#if hxluajit
 		call("onCreatePost");
 		#end
@@ -341,30 +342,6 @@ class PlayState extends MusicBeatState {
 		#end
 	}
 
-	function vanillaGF(s:String):String {
-		switch (s) {
-			case "school":
-				return "gf-pixel";
-			case "schoolEvil":
-				return "gf-pixel";
-			case 'mall':
-				return 'gf-christmas';
-			case 'mallEvil':
-				return 'gf-christmas';
-			case 'spooky':
-				return 'gf';
-			case 'philly':
-				return 'gf';
-			case 'limo':
-				return 'gf-car';
-			case 'tank':
-				return 'gf-tankman';
-			case 'stage':
-				return 'gf';
-		}
-		return 'gf';
-	}
-
 	var startTimer:FlxTimer;
 	var perfectMode:Bool = false;
 
@@ -391,39 +368,6 @@ class PlayState extends MusicBeatState {
 		if (boyfriend.holdTimer > Conductor.stepCrochet * (0.0011 #if FLX_PITCH / FlxG.sound.music.pitch #end) * boyfriend.singDuration
 			&& anim.startsWith('sing') && !anim.endsWith('miss'))
 			boyfriend.dance();
-	}
-
-	public static function vanillaSongStage(songName):String {
-		switch (songName) {
-			case 'spookeez' | 'south' | 'monster':
-				return 'spooky';
-			case 'pico' | 'blammed' | 'philly' | 'philly-nice':
-				return 'philly';
-			case 'milf' | 'satin-panties' | 'high':
-				return 'limo';
-			case 'cocoa' | 'eggnog':
-				return 'mall';
-			case 'winter-horrorland':
-				return 'mallEvil';
-			case 'senpai' | 'roses':
-				return 'school';
-			case 'thorns':
-				return 'schoolEvil';
-			case 'ugh' | 'guns' | 'stress':
-				return 'tank';
-		}
-		return 'stage';
-	}
-
-	function startCharacterPos(char:Character, ?gfCheck:Bool = false) {
-		if (gfCheck && char.curCharacter.startsWith('gf')) { // IF DAD IS GIRLFRIEND, HE GOES TO HER POSITION
-			char.setPosition(GF_X, GF_Y);
-			char.scrollFactor.set(0.95, 0.95);
-			char.danceEveryNumBeats = 2;
-			gf.kill();
-		}
-		char.x += char.position[0];
-		char.y += char.position[1];
 	}
 
 	public function characterBopper(beat:Int):Void {
@@ -559,7 +503,7 @@ class PlayState extends MusicBeatState {
 		return 0;
 	}
 
-	function sortByShit(Obj1, Obj2):Int {           
+	function sortByShit(Obj1, Obj2):Int {
 		return FlxSort.byValues(FlxSort.ASCENDING, Obj1.strumTime, Obj2.strumTime);
 	}
 
@@ -657,8 +601,8 @@ class PlayState extends MusicBeatState {
 
 				for (susNote in 0...Std.int(sussyLength)) {
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
-					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet), daNoteData, true,
-						oldNote, gottaHitNote, stageJson.isPixel == true ? true : false, type);
+					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet), daNoteData, true, oldNote,
+						gottaHitNote, stageJson.isPixel == true ? true : false, type);
 					sustainNote.altNote = section.altAnim == true;
 					unspawnNotes.push(sustainNote);
 					swagNote.tails.push(sustainNote);
@@ -1180,14 +1124,11 @@ class PlayState extends MusicBeatState {
 		totalNotes += 4;
 		if (isSick)
 			totalHitNotes += 4;
-		if (isSick && !daNote.isSustainNote && FlxG.save.data.splashes == true || cpuControlled && !daNote.isSustainNote) {
-			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-			noteSplash.setupNoteSplash(playerStrums.members[daNote.noteData % 4].x, playerStrums.members[daNote.noteData % 4].y, daNote.noteData,
-				stageJson.isPixel);
-			// new NoteSplash(daNote.x, daNote.y, daNote.noteData);
-			grpNoteSplashes.add(noteSplash);
-		}
-		if (cpuControlled) {accuracy = 0;
+		if (isSick && !daNote.isSustainNote && FlxG.save.data.splashes == true || cpuControlled && FlxG.save.data.splashes == true )
+			spawnSplash(daNote.targetReceptor,daNote)
+		
+		if (cpuControlled) {
+			accuracy = 0;
 			score = 0;
 			songScore = songMisses = totalHitNotes = totalNotes = 0;
 			text.text = "BOTPLAY";
@@ -1226,5 +1167,17 @@ class PlayState extends MusicBeatState {
 			return luaTexts.get(tag);
 		#end
 		return null;
+	}
+
+	var pixelStage(get, null):Bool;
+
+	function spawnSplash(receptor:Receptor, daNote:Note) {
+		var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
+		noteSplash.setupNoteSplash(receptor.x, receptor.y, daNote.noteData, pixelStage);
+		grpNoteSplashes.add(noteSplash);
+	}
+
+	function get_pixelStage():Bool {
+		return stageJson.isPixel;
 	}
 }

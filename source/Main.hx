@@ -5,6 +5,7 @@ import loading.Init;
 import flixel.FlxGame;
 import openfl.display.Sprite;
 import openfl.display.FPS;
+
 #if linux
 @:cppInclude('./external/gamemode_client.h')
 @:cppFileCode('
@@ -18,9 +19,7 @@ class Main extends Sprite {
 		super();
 
 		addChild(new FlxGame(0, 0, Init));
-		
 		addChild(fpsVar);
-		FlxG.bitmapLog.viewCache();
 	}
 
 	private static function resetSpriteCache(sprite:Sprite):Void {

@@ -19,6 +19,9 @@ typedef SwagSong = {
 
 	var stage:String;
 	var video:String;
+
+	
+	var version:String;
 }
 
 typedef SwagEvent = {
@@ -46,6 +49,7 @@ class Song {
 		this.notes = notes;
 		this.bpm = bpm;
 		this.sections = sections;
+		
 
 		for (i in 0...notes.length) {
 			this.sectionLengths.push(notes[i]);
@@ -69,6 +73,8 @@ class Song {
 		var swagShit:SwagSong = cast Json.parse(rawJson).song;
 		swagShit.player1 ??= "bf";
 		swagShit.player2 ??= "dad";
+		if(swagShit.version == null)
+			swagShit.version = "v0.2.0";
 
 		return swagShit;
 	}
