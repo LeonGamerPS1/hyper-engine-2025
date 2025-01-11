@@ -79,7 +79,8 @@ class ChartEditorState extends MusicBeatState {
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
 
-	var lastSelectedNType:String ="";
+	var lastSelectedNType:String = "";
+
 	override function create() {
 		curSection = lastSection;
 
@@ -115,11 +116,10 @@ class ChartEditorState extends MusicBeatState {
 				bpm: 150,
 				needsVoices: true,
 				player1: 'bf',
-				video: "",
 				player2: 'dad',
 				gfVersion: 'gf',
 				speed: 1,
-				version:"v0.2.0",
+				version: "v0.2.0",
 				stage: 'stage'
 			};
 		}
@@ -369,13 +369,11 @@ class ChartEditorState extends MusicBeatState {
 		// general shit
 		var title:FlxText = new FlxText(UI_box.x + 20, UI_box.y + 20, 0);
 		bullshitUI.add(title);
-		
-			var loopCheck = new FlxUICheckBox(UI_box.x + 10, UI_box.y + 50, null, null, "Loops", 100, ['loop check']);
-			loopCheck.checked = false;
-			tooltips.add(loopCheck, {title: 'Section looping', body: "Whether or not it's a simon says style section"});
-			bullshitUI.add(loopCheck);
 
-		 
+		var loopCheck = new FlxUICheckBox(UI_box.x + 10, UI_box.y + 50, null, null, "Loops", 100, ['loop check']);
+		loopCheck.checked = false;
+		tooltips.add(loopCheck, {title: 'Section looping', body: "Whether or not it's a simon says style section"});
+		bullshitUI.add(loopCheck);
 	}
 
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>) {
@@ -393,7 +391,6 @@ class ChartEditorState extends MusicBeatState {
 					FlxG.log.add('changed bpm shit');
 				case "Alt Animation":
 					_song.notes[curSection].altAnim = check.checked;
-
 			}
 		} else if (id == FlxUINumericStepper.CHANGE_EVENT && (sender is FlxUINumericStepper)) {
 			var nums:FlxUINumericStepper = cast sender;
@@ -415,21 +412,19 @@ class ChartEditorState extends MusicBeatState {
 				_song.notes[curSection].bpm = nums.value;
 				updateGrid();
 			}
-		}
-		else if (id == FlxUIDropDownMenu.CLICK_EVENT && (sender is FlxUIDropDownMenu)) {
+		} else if (id == FlxUIDropDownMenu.CLICK_EVENT && (sender is FlxUIDropDownMenu)) {
 			var nums:FlxUIDropDownMenu = cast sender;
 			var wname = nums.name;
 			FlxG.log.add(wname);
 			lastSelectedNType = nums.selectedLabel;
 			if (wname == 'note_type') {
-				
-				if(curSelectedNote == null)
+				if (curSelectedNote == null)
 					return;
-		
+
 				trace("weed");
 				curSelectedNote[3] = nums.selectedLabel;
 				updateGrid();
-			} 
+			}
 		}
 
 		// FlxG.log.add(id + " WEED " + sender + " WEED " + data + " WEED " + params);

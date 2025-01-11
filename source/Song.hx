@@ -18,10 +18,10 @@ typedef SwagSong = {
 	var gfVersion:String;
 
 	var stage:String;
-	var video:String;
-
+	//var video:String; // hxcodec issues waaaaaaaaaa
 	
-	var version:String;
+	var version:Null<String>;
+	
 }
 
 typedef SwagEvent = {

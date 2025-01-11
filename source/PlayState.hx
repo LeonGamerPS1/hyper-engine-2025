@@ -164,14 +164,7 @@ class PlayState extends MusicBeatState {
 		}
 		call("onCreate");
 		#end
-		if (SONG.video != null
-			&& Assets.exists('assets/videos/${SONG.video}.mp4')
-			&& !seenCutscene) { // lua scripts just set PlayState.SONG.video secretly :sob:
-			FlxG.switchState(new VideoState('assets/videos/${SONG.video}.mp4', function() {
-				seenCutscene = true;
-				FlxG.switchState(new PlayState());
-			}));
-		}
+	
 
 		DiscordClient.changePresence("Song: " + SONG.song);
 
