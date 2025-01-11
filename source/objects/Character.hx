@@ -76,9 +76,11 @@ class Character extends FlxSprite {
 			position = json.position;
 		if (json.camera_position != null)
 			camera_position = json.camera_position;
+
 		loadTexture('characters/${json.texture_path}');
 		regenOffsets(isPlayer);
-
+		if(FlxG.save.data.characters == false)
+          kill();
 		//	trace(json.health_colors);
 	}
 

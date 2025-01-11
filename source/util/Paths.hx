@@ -54,6 +54,7 @@ class Paths {
 					obj.persist = false; // make sure the garbage collector actually clears it up
 					obj.destroyOnNoUse = true;
 					obj.destroy();
+					obj = null;
 				}
 			}
 		}
@@ -233,6 +234,12 @@ class Paths {
 	public static inline function getFlxAnimatePath(key:String) {
 		return getPath('images/$key', TEXT);
 	}
+	
+	inline static public function newsvoices(key:String,variation:String = "") {
+		key = key.toLowerCase();
+		return getPath('songs/$key/Voices${variation != "" ? '-$variation' : ""}.ogg', SOUND);
+	}
+
 
 	#if sys
 	public static inline function getBytes(path:String):haxe.io.Bytes {

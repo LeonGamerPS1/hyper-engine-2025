@@ -52,13 +52,14 @@ class PlayState extends MusicBeatState {
 
 	public var defaultCamZoom:Float = 1.0;
 	public var voices:FlxSound = new FlxSound();
+	public var voicesp1:FlxSound = new FlxSound();
+	public var voicesp2:FlxSound = new FlxSound();
 	public var opponentStrums:StrumLine;
 	public var playerStrums:StrumLine;
 
 	public var unspawnNotes:Array<Note> = [];
 	public var generatedMusic:Bool = true;
 	public var cpuControlled:Bool = false;
-
 
 	public static var instance:PlayState;
 
@@ -123,6 +124,8 @@ class PlayState extends MusicBeatState {
 
 	public static var seenCutscene:Bool = false;
 
+	public var twoVoices:Bool = false;
+
 	override public function create() {
 		Paths.clearUnusedMemory();
 		instance = this;
@@ -159,7 +162,6 @@ class PlayState extends MusicBeatState {
 		}
 		call("onCreate");
 		#end
-	
 
 		DiscordClient.changePresence("Song: " + SONG.song);
 
@@ -229,8 +231,8 @@ class PlayState extends MusicBeatState {
 		startingSong = true;
 		FlxG.sound.cache(Paths.inst(Paths.formatSongName(SONG.song)));
 		FlxG.sound.cache(Paths.voices(Paths.formatSongName(SONG.song)));
-
-		// FlxG.sound.music.loadEmbedded('assets/music/${SONG.song.toLowerCase()}/Inst.ogg');
+		FlxG.sound.cache(Paths.newsvoices(Paths.formatSongName(SONG.song), 'Player'));
+		FlxG.sound.cache(Paths.newsvoices(Paths.formatSongName(SONG.song), 'Opponent'));
 
 		Conductor.songPosition = 0;
 		Conductor.songPosition -= Conductor.crochet * 5;
@@ -266,6 +268,7 @@ class PlayState extends MusicBeatState {
 		char.x += char.position[0];
 		char.y += char.position[1];
 	}
+
 	function luaFileExists(scriptName:String) {
 		#if hxluajit
 		var fileExists:Bool = false;
@@ -475,10 +478,22 @@ class PlayState extends MusicBeatState {
 
 	function startSong() {
 		FlxG.sound.list.add(voices);
+		FlxG.sound.list.add(voicesp1);
+		FlxG.sound.list.add(voicesp2);
 		FlxG.sound.playMusic(Paths.inst(Paths.formatSongName(SONG.song)), 1, false);
-		voices.loadEmbedded(Paths.voices(Paths.formatSongName(SONG.song)));
-		voices.looped = false;
-		voices.play();
+		if (!Assets.exists(Paths.newsvoices(Paths.formatSongName(SONG.song), 'Opponent'))
+			&& !Assets.exists(Paths.newsvoices(Paths.formatSongName(SONG.song), 'Player'))) {
+			voices.loadEmbedded(Paths.voices(Paths.formatSongName(SONG.song)));
+			voices.looped = false;
+			voices.play();
+		} else if (Assets.exists(Paths.newsvoices(Paths.formatSongName(SONG.song), 'Opponent'))
+			|| Assets.exists(Paths.newsvoices(Paths.formatSongName(SONG.song), 'Player'))) {
+			voicesp1.loadEmbedded(Paths.newsvoices(Paths.formatSongName(SONG.song), 'Player'));
+			voicesp2.loadEmbedded(Paths.newsvoices(Paths.formatSongName(SONG.song), 'Opponent'));
+			voicesp1.play();
+			voicesp2.play();
+			twoVoices = true;
+		}
 		FlxG.sound.music.onComplete = function() {
 			voices.kill();
 			voices.destroy();
@@ -788,6 +803,10 @@ class PlayState extends MusicBeatState {
 		curHealth = FlxMath.lerp(curHealth, health, .2 / (60 / 60));
 		if (Math.abs(voices.time - Conductor.songPosition) > 20)
 			voices.time = Conductor.songPosition;
+		if (Math.abs(voicesp1.time - Conductor.songPosition) > 20)
+			voicesp1.time = Conductor.songPosition;
+		if (Math.abs(voicesp2.time - Conductor.songPosition) > 20)
+			voicesp2.time = Conductor.songPosition;
 		if (FlxG.camera.zoom != defaultCamZoom) {
 			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
 		}
@@ -827,6 +846,8 @@ class PlayState extends MusicBeatState {
 			if (FlxG.sound.music != null) {
 				FlxG.sound.music.pause();
 				voices.pause();
+				voicesp1.pause();
+				voicesp2.pause();
 			}
 		}
 
@@ -837,18 +858,25 @@ class PlayState extends MusicBeatState {
 		FlxG.sound.music.volume = 1;
 		voices.volume = 1;
 		voices.pause();
+		voicesp1.pause();
+		voicesp2.pause();
 
 		FlxG.sound.music.play();
 		Conductor.songPosition = FlxG.sound.music.time;
 		voices.time = Conductor.songPosition;
+		voicesp1.time = Conductor.songPosition;
+		voicesp2.time = Conductor.songPosition;
 		voices.play();
+		voicesp1.play();
+		voicesp2.play();
 	}
 
 	public function unpause() {
 		voices.resume();
+		voicesp1.resume();
+		voicesp2.resume();
 		FlxG.sound.music.resume();
 		paused = false;
-		// resyncVocals();
 	}
 
 	function get_spawnZone():Float {
@@ -950,6 +978,8 @@ class PlayState extends MusicBeatState {
 		if (health < 0)
 			health = 0;
 		totalNotes += 4;
+		voices.volume = 0;
+		voicesp1.volume = 0;
 
 		songMisses++;
 		updateScore();
@@ -958,6 +988,8 @@ class PlayState extends MusicBeatState {
 	function opponentNoteHit(daNote:Note) {
 		if (daNote.wasHit)
 			return;
+		voices.volume = 1;
+		voicesp2.volume = 1;
 
 		var receptor:Receptor = opponentStrums.getReceptorOfID(daNote.noteData % 4);
 		daNote.wasHit = true;
@@ -1011,7 +1043,8 @@ class PlayState extends MusicBeatState {
 			popUpScore(daNote.strumTime, daNote);
 			// totalNotes++;
 		}
-
+		voices.volume = 1;
+		voicesp1.volume = 1;
 		updateScore();
 		if (daNote.isSustainNote)
 			return;
@@ -1097,7 +1130,7 @@ class PlayState extends MusicBeatState {
 	private function popUpScore(strumtime:Float, daNote:Note):Void {
 		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
 		// boyfriend.playAnim('hey');
-		voices.volume = 1;
+
 		var score:Int = 350;
 		var daRating:String = "sick";
 		var isSick:Bool = true;
@@ -1123,9 +1156,9 @@ class PlayState extends MusicBeatState {
 		totalNotes += 4;
 		if (isSick)
 			totalHitNotes += 4;
-		if (isSick && !daNote.isSustainNote && FlxG.save.data.splashes == true || cpuControlled && FlxG.save.data.splashes == true )
-			spawnSplash(daNote.targetReceptor,daNote);
-		
+		if (isSick && !daNote.isSustainNote && FlxG.save.data.splashes == true || cpuControlled && FlxG.save.data.splashes == true)
+			spawnSplash(daNote.targetReceptor, daNote);
+
 		if (cpuControlled) {
 			accuracy = 0;
 			score = 0;

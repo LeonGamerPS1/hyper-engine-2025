@@ -1,6 +1,5 @@
 package backend;
 
-import haxe.PosInfos;
 import openfl.Assets;
 import haxe.Json;
 
@@ -13,7 +12,6 @@ class WeekData {
 			var weekPath:String = weekFiles[i].split(".json")[0];
 			try {
 				var weekFile:WeekFile = parseWeek(weekPath);
-				trace('Week "$weekPath" succesfully  parsed and Loaded.');
 				weeks[weekPath] = weekFile;
 				for (i in 0...weeks[weekPath].difficulties.length) {
 					var diff:String = weeks[weekPath].difficulties[i];
@@ -28,17 +26,13 @@ class WeekData {
 
 	/** 
 	 * this also is called by PolymodHandler lol ------------------
-	 * calls init  but it actually clears the week cache it does so no dupes ahjjjj (also shuts off traces til its done :3)
+	 * calls init  but it actually clears the week cache it does so no duplicates exist
 	**/
 	public static function reload() {
-		var oldTrace = haxe.Log.trace;
-		haxe.Log.trace = function(val:Dynamic, ?pos:PosInfos) {};
 		weeks.clear();
 		for (i in 0...Difficulty.diffs.length)
 			Difficulty.diffs.pop();
 		init();
-		haxe.Log.trace = oldTrace;
-		oldTrace = null;
 	}
 
 	public static function parseWeek(weekName:String):WeekFile {

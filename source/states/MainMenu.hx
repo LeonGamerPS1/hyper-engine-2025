@@ -26,6 +26,7 @@ class MainMenu extends MusicBeatState {
 
 	override function create() {
 		super.create();
+		openfl.system.System.gc();
 		var yScroll:Float = Math.max(0.25 - (0.05 * (items.length - 4)), 0.1);
 
 		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menu/menuBG'));
@@ -77,7 +78,7 @@ class MainMenu extends MusicBeatState {
 		}
 		add(menuItems);
 
-		var versionShit:FlxText = new FlxText(0, FlxG.height - 20, 0, "Hyper Engine v0.2.0", 12);
+		var versionShit:FlxText = new FlxText(0, FlxG.height - 20, 0, "Hyper Engine v0.2.1", 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat('assets/font/bookantiqua_bold.ttf', 16, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK, true);
 		versionShit.antialiasing = true;

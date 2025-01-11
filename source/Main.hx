@@ -1,10 +1,9 @@
 package;
 
-import flixel.FlxG;
 import loading.Init;
 import flixel.FlxGame;
 import openfl.display.Sprite;
-import openfl.display.FPS;
+import openfl.display.FPSK;
 
 #if linux
 @:cppInclude('./external/gamemode_client.h')
@@ -13,13 +12,18 @@ import openfl.display.FPS;
 ')
 #end
 class Main extends Sprite {
-	public static var fpsVar:FPS = new FPS(3, 3, 0xFFFFFF);
+	public static var fpsVar:FPSK = new FPSK(3, 3, 0xFFFFFF);
 
 	public function new() {
+		haxe.Log.trace = backend.Log.trace;
 		super();
 
 		addChild(new FlxGame(0, 0, Init));
 		addChild(fpsVar);
+		#if (windows && cpp) 
+		native.NativeUtil.Windows.setWindowDarkMode("Friday Night Funkin': Hyper Engine",true);
+		native.NativeUtil.Windows.setDPIAware();
+		#end
 	}
 
 	private static function resetSpriteCache(sprite:Sprite):Void {

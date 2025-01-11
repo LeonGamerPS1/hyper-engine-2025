@@ -20,9 +20,14 @@ class MusicBeatState extends FunkinState {
 
 	var loops:Float = 30;
 
+	override  function create() {
+		super.create();
+		Paths.clearUnusedMemory();
+	}
+
 	override function update(elapsed:Float) {
 		// everyStep();
-
+		openfl.system.System.gc();
 		var oldStep:Int = curStep;
 		var oldSection:Int = totalSection;
 		updateCurStep();
@@ -66,6 +71,8 @@ class MusicBeatState extends FunkinState {
 	}
 
 	public function beatHit():Void {
+		openfl.system.System.gc();
+	
 		stagesFunc(function(stage:BaseStage) {
 			stage.beatHit();
 		});

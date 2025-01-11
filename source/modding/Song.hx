@@ -75,7 +75,7 @@ class Song {
 		swagShit.player1 ??= "bf";
 		swagShit.player2 ??= "dad";
 		if(swagShit.version == null)
-			swagShit.version = "v0.2.0";
+			swagShit.version = "v0.2.1";
 
 		return swagShit;
 	}
