@@ -1,8 +1,0 @@
-version=2.3.5
-src=source
-bin=export
-report=report
-hxml=test.hxml
-classPaths=source
-resources=assets
-templates=temps

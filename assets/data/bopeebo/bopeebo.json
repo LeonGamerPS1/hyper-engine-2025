@@ -840,7 +840,7 @@
 				"mustHitSection": true
 			}
 		],
-		"player3": "gf",
+		"gfVersion": "gf",
 		"song": "Bopeebo",
 		"needsVoices": true,
 		"validScore": true,

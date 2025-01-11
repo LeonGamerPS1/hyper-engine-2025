@@ -13,7 +13,7 @@ import flixel.input.FlxInput.FlxInputState;
 import flixel.ui.FlxButton;
 import flixel.input.actions.FlxActionInputDigital.FlxActionInputDigitalIFlxInput;
 import flixel.input.actions.FlxAction.FlxActionDigital;
-import Controls.Control;
+import backend.Controls.Control;
 import flixel.FlxG;
 import flixel.group.FlxSpriteGroup;
 
