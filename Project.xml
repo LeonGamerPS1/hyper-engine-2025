@@ -34,7 +34,10 @@
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
-	<set name="BUILD_DIR" value="export" />
+	<set name="BUILD_DIR" value="export/x86_64" unless="32bits web" />
+	<set name="BUILD_DIR" value="export/x86_32" if="32bits" unless="web" />
+	<set name="BUILD_DIR" value="export/other/" if="web"/>
+
 	<source path="source" />
 	<assets path="assets" />
 

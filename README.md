@@ -18,6 +18,7 @@ Kawaisprite - Musician
 ### Other
 CCobaltDev - backend.Log.hx from Horizon Engine (thank you cobalt for letting me borrow it!, [horizon engine](https://github.com/CCobaltDev/FNF-Horizon-Engine) )
 ShadowMario - some of psych engines code (that i took) - [psych engine](https://github.com/ShadowMario/FNF-PsychEngine)
+TheRealJake_12 - Thank you for letting me borrow your hxluajit thing :D
 
 ninjamuffin99 - i took some thingys of the 0.2.8 FNF Engine :3 - [link to the engine](https://github.com/FunkinCrew/Funkin/tree/v0.2.7.1)
 

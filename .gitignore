@@ -2,3 +2,4 @@ export/
 .vscode/
 *.obj
 .haxelib/
+releases/
