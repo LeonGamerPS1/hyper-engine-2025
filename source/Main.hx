@@ -15,7 +15,7 @@ class Main extends Sprite {
 	public static var fpsVar:FPSK = new FPSK(3, 3, 0xFFFFFF);
 
 	public function new() {
-		haxe.Log.trace = backend.Log.trace;
+		backend.Log.init();
 		super();
 
 		addChild(new FlxGame(0, 0, Init));
