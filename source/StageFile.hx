@@ -34,7 +34,7 @@ class StageUtil {
 				return 'gf-car';
 			case 'tank':
 				return 'gf-tankman';
-			case 'stage':
+			default:
 				return 'gf';
 		}
 		return 'gf';
