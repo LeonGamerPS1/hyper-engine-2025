@@ -119,6 +119,7 @@ class ChartEditorState extends MusicBeatState {
 				player2: 'dad',
 				gfVersion: 'gf',
 				speed: 1,
+				version:"v0.2.0",
 				stage: 'stage'
 			};
 		}

@@ -1,5 +1,6 @@
 package;
 
+import StageFile.StageUtil;
 import DialogueBox.DialogueFile;
 import haxe.Constraints.Function;
 import flixel.text.FlxText;
@@ -267,6 +268,16 @@ class PlayState extends MusicBeatState {
 		add(diabox);
 	}
 
+	function startCharacterPos(char:Character, ?gfCheck:Bool = false) {
+		if (gfCheck && char.curCharacter.startsWith('gf')) { // IF DAD IS GIRLFRIEND, HE GOES TO HER POSITION
+			char.setPosition(GF_X, GF_Y);
+			char.scrollFactor.set(0.95, 0.95);
+			char.danceEveryNumBeats = 2;
+			gf.kill();
+		}
+		char.x += char.position[0];
+		char.y += char.position[1];
+	}
 	function luaFileExists(scriptName:String) {
 		#if hxluajit
 		var fileExists:Bool = false;
@@ -284,9 +295,9 @@ class PlayState extends MusicBeatState {
 	function parseStage() {
 		// path ??= "stage";
 		if (SONG.stage == null || SONG.stage.length < 1)
-			SONG.stage = vanillaSongStage(Paths.formatSongName(SONG.song));
+			SONG.stage = StageUtil.vanillaSongStage(Paths.formatSongName(SONG.song));
 		if (SONG.stage == null || SONG.stage.length < 1)
-			SONG.gfVersion = vanillaGF(SONG.stage);
+			SONG.gfVersion = StageUtil.vanillaGF(SONG.stage);
 		curStage = SONG.stage;
 
 		if (Assets.exists('assets/stages/$curStage.json'))
@@ -1125,7 +1136,7 @@ class PlayState extends MusicBeatState {
 		if (isSick)
 			totalHitNotes += 4;
 		if (isSick && !daNote.isSustainNote && FlxG.save.data.splashes == true || cpuControlled && FlxG.save.data.splashes == true )
-			spawnSplash(daNote.targetReceptor,daNote)
+			spawnSplash(daNote.targetReceptor,daNote);
 		
 		if (cpuControlled) {
 			accuracy = 0;

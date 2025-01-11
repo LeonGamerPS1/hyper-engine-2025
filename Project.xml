@@ -37,7 +37,6 @@
 	<set name="BUILD_DIR" value="export" />
 	<source path="source" />
 	<assets path="assets" />
-	<assets path="hdll/windows" rename="" if="hl windows" />
 
 	<!--____________Stinky Defines____________________-->
     <haxedef  name="LUA_SYSTEM" if="cpp"/>
@@ -50,8 +49,7 @@
 	<section if="cpp">
 	 <haxelib name="hxCodec" if="desktop || mobile" />
     </section>
-	<!--In
-	case you want to use the addons package-->
+	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
 
 	<section if="desktop">
@@ -59,30 +57,17 @@
 	
 	</section>
 
-	
 	<haxelib name="hxluajit" if="cpp" />
-	<haxelib name="SScript" unless="web" />
-
-
 	<haxelib name="flixel-ui" />
-
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
 	<haxedef name="FLX_NO_HEALTH" />
 
-
-	<!--Optimise
-	inputs, be careful you will get null errors if you don't use conditionals in your game-->
+	<!--Optimise inputs, be careful you will get null errors if you don't use conditionals in your game-->
 	<haxedef name="FLX_NO_MOUSE" if="mobile" />
 	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
 	<haxedef name="FLX_NO_TOUCH" if="desktop" />
-
-
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 	<haxedef name="message.reporting" value="pretty" />
-
-	<!-- _________________________________ Custom _______________________________ -->
-
-	
 </project>

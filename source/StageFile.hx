@@ -14,7 +14,7 @@ typedef StageFile = {
 
 	public var defaultCamZoom:Null<Float>;
 }
-
+@:publicFields
 class StageUtil {
 	static function vanillaGF(s:String):String {
 		switch (s) {
@@ -62,14 +62,4 @@ class StageUtil {
 		return 'stage';
 	}
 
-	function startCharacterPos(char:Character, ?gfCheck:Bool = false) {
-		if (gfCheck && char.curCharacter.startsWith('gf')) { // IF DAD IS GIRLFRIEND, HE GOES TO HER POSITION
-			char.setPosition(GF_X, GF_Y);
-			char.scrollFactor.set(0.95, 0.95);
-			char.danceEveryNumBeats = 2;
-			gf.kill();
-		}
-		char.x += char.position[0];
-		char.y += char.position[1];
-	}
 }
