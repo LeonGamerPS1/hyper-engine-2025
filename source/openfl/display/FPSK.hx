@@ -42,7 +42,7 @@ class FPSK extends TextField
 		currentFPS = 0;
 		selectable = false;
 		mouseEnabled = false;
-		defaultTextFormat = new TextFormat("_sans", 12, color);
+		defaultTextFormat = new TextFormat("_sans", 15, color);
 		text = "FPS: ";
 
 		cacheCount = 0;
@@ -84,7 +84,7 @@ class FPSK extends TextField
 			text += "\nstage3DDC: " + Context3DStats.contextDrawCalls(DrawCallContext.STAGE3D);
 			#end
             #if (windows && cpp) 
-            text += '\nMemory: ' + FlxStringUtil.formatBytes(native.NativeUtil.Windows.getCurrentUsedMemory());
+            text += ' • Memory: ' + FlxStringUtil.formatBytes(native.NativeUtil.Windows.getCurrentUsedMemory());
 			
             #end
 		}
