@@ -10,7 +10,6 @@ typedef SwagSong = {
 	var song:String;
 	var notes:Array<SwagSection>;
 	var bpm:Float;
-	// var sections:Int;
 	var needsVoices:Bool;
 	var speed:Float;
 
@@ -19,8 +18,7 @@ typedef SwagSong = {
 	var gfVersion:String;
 
 	var stage:String;
-	//var video:String; // hxcodec issues waaaaaaaaaa
-	
+	var events:Array<SwagEvent>;
 	var version:Null<String>;
 	
 }
@@ -32,9 +30,7 @@ typedef SwagEvent = {
 	var val1:String;
 	var val2:String;
 }
-typedef SwagEvents = {
-	var events:Array<SwagEvent>;
-}
+
 
 class Song {
 	public var song:String;

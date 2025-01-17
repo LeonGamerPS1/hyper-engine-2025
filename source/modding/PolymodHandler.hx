@@ -30,6 +30,10 @@ class PolymodHandler {
 	static var modFileSystem:Null<ZipFileSystem> = null;
 
 	public static function init(?framework:Null<Framework>) {
+		#if sys // fix for crash on sys platforms 
+		if(!sys.FileSystem.exists('./mods'))
+			sys.FileSystem.createDirectory('./mods');
+		#end
 		var dirs:Array<String> = [];
 		var polyMods = Polymod.scan({modRoot: './mods/'});
 		for (i in 0...polyMods.length) {

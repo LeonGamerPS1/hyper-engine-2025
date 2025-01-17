@@ -4,34 +4,41 @@ import effects.shaders.RGBPalette.RGBShaderReference;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
-class Receptor extends FlxSprite {
+class Receptor extends FlxSprite
+{
 	public var noteData:Int;
 	public var resetAnim:Float = 0;
 
-	public var downScroll:Bool = false;
+	public var downScroll:Null<Bool> = false;
 
-	public var sustainReduce:Bool = true;
-	public var direction:Float = 90;
+	public var sustainReduce:Null<Bool> = true;
+	public var direction:Null<Float> = 90;
 	public var texture(default, set):String;
-	public var isPixel:Bool = false;
+	public var isPixel:Null<Bool> = false;
 
 	public static var strumScale:Float = 1;
 
-	public var rgbShader:RGBShaderReference;
+	public var rgbShader:Null<RGBShaderReference>;
 
 	public static var colArray:Array<String> = ["arrowLEFT", "arrowDOWN", "arrowUP", "arrowRIGHT"];
 
-	public function new(noteData:Int = 0, isPixel:Bool = false) {
+	public var defaultX:Null<Float> = 0;
+	public var defaultY:Null<Float> = 0;
+
+	public function new(noteData:Int = 0, isPixel:Bool = false)
+	{
 		super(0, 0);
 		this.noteData = noteData;
 		this.isPixel = isPixel;
 
-		texture = "NOTE_assets";
 		rgbShader = new RGBShaderReference(this, Note.initializeGlobalRGBShader(noteData, isPixel));
+		texture = "NOTE_assets";
+		x += Note.swagWidth / 2;
 		playAnim('static', true);
 	}
 
-	function pixel(tex:String = "NOTE_assets") {
+	function pixel(tex:String = "NOTE_assets")
+	{
 		loadGraphic(Paths.image('pixelUI/$tex'));
 		width = width / 4;
 		height = height / 5;
@@ -44,7 +51,8 @@ class Receptor extends FlxSprite {
 		animation.add('red', [7]);
 		animation.add('blue', [5]);
 		animation.add('purple', [4]);
-		switch (Math.abs(noteData % 4)) {
+		switch (Math.abs(noteData % 4))
+		{
 			case 0:
 				animation.add('static', [0]);
 				animation.add('pressed', [4, 8], 24, false);
@@ -64,7 +72,8 @@ class Receptor extends FlxSprite {
 		}
 	}
 
-	function normal(tex:String = "NOTE_assets") {
+	function normal(tex:String = "NOTE_assets")
+	{
 		frames = Paths.getSparrowAtlas(tex);
 		animation.addByPrefix('static', '${colArray[noteData % colArray.length]}0');
 		animation.addByPrefix('pressed', '${colArray[noteData % colArray.length].split("arrow")[1].toLowerCase()} press', 24, false);
@@ -75,10 +84,13 @@ class Receptor extends FlxSprite {
 		antialiasing = FlxG.save.data.antialias;
 	}
 
-	override function update(elapsed:Float) {
-		if (resetAnim > 0) {
+	override function update(elapsed:Float)
+	{
+		if (resetAnim > 0)
+		{
 			resetAnim -= elapsed;
-			if (resetAnim <= 0) {
+			if (resetAnim <= 0)
+			{
 				playAnim('static', true);
 				resetAnim = 0;
 			}
@@ -86,35 +98,57 @@ class Receptor extends FlxSprite {
 		super.update(elapsed);
 	}
 
-	public function getAnimationName():String {
+	public function getAnimationName():String
+	{
 		return (animation.curAnim != null ? animation.curAnim.name : null);
 	}
 
-	public function playAnim(anim:String = 'static', ?force:Bool = false) {
+	public function playAnim(anim:String = 'static', ?force:Bool = false)
+	{
 		animation.play(anim, force);
 
 		if (rgbShader != null)
 			rgbShader.enabled = anim != 'static';
-		if (animation.curAnim != null) {
+		if (animation.curAnim != null)
+		{
 			centerOffsets();
 			centerOrigin();
 		}
 	}
 
-	function set_texture(value:String):String {
+	function set_texture(value:String):String
+	{
 		reloadNote(value);
 
 		return texture = value;
 	}
 
-	function reloadNote(tex:String = "NOTE_assets") {
+	public function reloadNote(tex:String = "NOTE_assets")
+	{
 		if (isPixel == false)
 			normal(tex);
 		else
 			pixel(tex);
+		reloadRGB();
 
-		x += Note.swagWidth / 2;
 		playAnim('static');
 		updateHitbox();
+	}
+
+	public function reloadRGB()
+	{
+		rgbShader.r = Note.initializeGlobalRGBShader(noteData, isPixel).r;
+		rgbShader.g = Note.initializeGlobalRGBShader(noteData, isPixel).g;
+		rgbShader.b = Note.initializeGlobalRGBShader(noteData, isPixel).b;
+	}
+
+	override function destroy()
+	{
+		super.destroy();
+		sustainReduce = null;
+		downScroll = null;
+		direction = null;
+		isPixel = null;
+		rgbShader = null;
 	}
 }

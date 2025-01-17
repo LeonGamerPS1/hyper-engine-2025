@@ -1,4 +1,4 @@
-package backend;
+package modding;
 
 import flixel.FlxG;
 import flixel.FlxCamera;
@@ -6,8 +6,6 @@ import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.addons.display.FlxRuntimeShader;
-import hscript.Interp;
-import hscript.Parser;
 import flixel.FlxSprite;
 import haxe.ds.ObjectMap;
 import haxe.ds.StringMap;
@@ -24,7 +22,7 @@ typedef State = cpp.RawPointer<Lua_State>;
 
 class LuaScript {
 	private static var callbacks:Map<String, Function> = [];
-	public static var hscript:HScript = null;
+
 
 	public var closed:Bool = false;
 
@@ -53,7 +51,7 @@ class LuaScript {
 			Application.current.window.alert(e.message, 'Funkin Hyper');
 			die();
 		}
-		initHaxeModule();
+	
 		setFunctions();
 	}
 
@@ -361,75 +359,12 @@ class LuaScript {
 		});
 		ReflectionFuncs.copyTo(this);
 
-		HscriptRuntime.copyTo(this);
 	}
 
 	public static function getShader(obj:String):Shader {
 		return PlayState.instance.luaShaders.get(obj);
 	}
 
-	public function initHaxeModule() {
-		if (hscript == null) {
-			trace('initializing haxe interp for: $scriptName');
-			hscript = new HScript();
-		}
-	}
 }
 
-class HScript {
-	public static var parser:Parser = new Parser();
 
-	public var interp:Interp;
-
-	public var variables(get, never):Map<String, Dynamic>;
-
-	public function get_variables() {
-		return interp.variables;
-	}
-
-	public function new() {
-		interp = new Interp();
-		interp.variables.set('FlxG', FlxG);
-		interp.variables.set('FlxSprite', FlxSprite);
-		interp.variables.set('FlxCamera', FlxCamera);
-		interp.variables.set('FlxTimer', FlxTimer);
-		interp.variables.set('FlxTween', FlxTween);
-		interp.variables.set('FlxEase', FlxEase);
-		interp.variables.set('PlayState', PlayState);
-		interp.variables.set('game', PlayState.instance);
-		interp.variables.set('Paths', Paths);
-		interp.variables.set('Conductor', Conductor);
-		interp.variables.set('ClientPrefs', ClientPrefs);
-		interp.variables.set('Character', Character);
-		interp.variables.set('Alphabet', Alphabet);
-		#if (!flash && sys)
-		interp.variables.set('FlxRuntimeShader', FlxRuntimeShader);
-		#end
-		interp.variables.set('ShaderFilter', openfl.filters.ShaderFilter);
-		interp.variables.set('StringTools', StringTools);
-
-		interp.variables.set('setVar', function(name:String, value:Dynamic) {
-			PlayState.instance.variables.set(name, value);
-		});
-		interp.variables.set('getVar', function(name:String) {
-			var result:Dynamic = null;
-			if (PlayState.instance.variables.exists(name))
-				result = PlayState.instance.variables.get(name);
-			return result;
-		});
-		interp.variables.set('removeVar', function(name:String) {
-			if (PlayState.instance.variables.exists(name)) {
-				PlayState.instance.variables.remove(name);
-				return true;
-			}
-			return false;
-		});
-	}
-
-	public function execute(codeToRun:String):Dynamic {
-		@:privateAccess
-		HScript.parser.line = 1;
-		HScript.parser.allowTypes = true;
-		return interp.execute(HScript.parser.parseString(codeToRun));
-	}
-}

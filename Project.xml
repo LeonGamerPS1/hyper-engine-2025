@@ -21,7 +21,7 @@
 
 	<!--These
 	window settings apply to all targets-->
-	<window width="1280" height="720" fps="24" background="#000000" hardware="true" vsync="false" />
+	<window width="1280" height="720" fps="24" background="#000000" hardware="true" vsync="true" />
 
 	<!--HTML5-specific-->
 	<window if="html5" resizable="true" />
@@ -43,11 +43,14 @@
 
 	<!--____________Stinky Defines____________________-->
     <haxedef  name="LUA_SYSTEM" if="cpp"/>
+
+	<define name="hscriptPos" />
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
 	<haxelib name="polymod" />
 	<haxelib name="firetongue" />
+	<haxelib name="hscript" rename="hscript" />
 
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />

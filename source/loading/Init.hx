@@ -27,13 +27,8 @@ class Init extends FlxState {
 				Main.resetSpriteCache(FlxG.game);
 		});
 
-		#if sys
-		if (FlxG.save.data.loading == true)
-			FlxG.switchState(new LoadingScreen());
-		else 
-			FlxG.switchState(new Title());
-		#else
+	
 		FlxG.switchState(new Title());
-		#end
+	
 	}
 }

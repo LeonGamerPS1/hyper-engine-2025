@@ -49,7 +49,7 @@ class OptionsMenu extends MusicBeatState {
 				FlxFlicker.flicker(optionTexts.members[i], 1, 0.1, true, true, function(flr) {
 					switch (optionTexts.members[i].text.toLowerCase()) {
 						case "note-rgb":
-
+							FlxG.switchState(new editors.NoteRGBEditorState());
 						case "options":
 							FlxG.switchState(new Options());
 					}

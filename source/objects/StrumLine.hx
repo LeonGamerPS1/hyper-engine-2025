@@ -10,6 +10,8 @@ class StrumLine extends FlxSpriteGroup {
 			num.x += Note.swagWidth * i * Receptor.strumScale;
 			num.downScroll = downScroll;
 			add(num);
+			num.defaultX = num.x;
+			num.defaultY = num.y;
 		}
 	}
 
