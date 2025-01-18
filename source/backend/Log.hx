@@ -15,16 +15,6 @@ class Log {
 	public static function init():Void {
 		ogTrace = haxe.Log.trace;
 		haxe.Log.trace = hxTrace;
-
-		LogStyle.NORMAL.onLog.add(data -> print(data, 'FLIXEL', 214));
-		LogStyle.WARNING.onLog.add(data -> {
-			print(data, 'FLIXEL WARN', 214);
-		});
-		LogStyle.ERROR.onLog.add(data -> {
-			print(data, 'FLIXEL ERROR', 196);
-		});
-
-
 	}
 
 	@:keep static inline function ansi(color:Int):String

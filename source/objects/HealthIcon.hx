@@ -43,10 +43,9 @@ class HealthIcon extends FlxSprite {
 				var path = Paths.img('icons/icon-' + newChar);
 				if (Assets.exists(Paths.img('icons/icon-' + newChar)))
 					loadGraphic(Paths.image('icons/icon-' + newChar), true, 150, 150);
-				else {
-					trace(Paths.img('icons/icon-' + newChar) + " doesn't exist. Loading Default Face icon.");
+				else
 					loadGraphic(Paths.image('icons/icon-face'), true, 150, 150);
-				}
+
 				animation.add(newChar, [0, 1], 0, false, isPlayer);
 				iconOffsets[0] = (width - 150) / 2;
 				iconOffsets[1] = (width - 150) / 2;
@@ -64,10 +63,9 @@ class HealthIcon extends FlxSprite {
 			setPosition(sprTracker.x + sprTracker.width + 10, sprTracker.y - 30);
 	}
 
-	
-	override  function updateHitbox() {
+	override function updateHitbox() {
 		super.updateHitbox();
 		offset.x = iconOffsets[0];
-			offset.y = iconOffsets[1];
+		offset.y = iconOffsets[1];
 	}
 }

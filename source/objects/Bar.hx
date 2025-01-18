@@ -42,6 +42,7 @@ class Bar extends FlxTypedSpriteGroup<FlxSprite> {
 		rightBar.color = FlxColor.BLACK;
 		rightBar.antialiasing = FlxG.save.data.antialias;
 
+	
 		add(leftBar);
 		add(rightBar);
 		add(bg);

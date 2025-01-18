@@ -1,5 +1,6 @@
 package states;
 
+import editors.Events;
 import flixel.util.FlxTimer;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.tweens.FlxTween;
@@ -61,6 +62,7 @@ class PauseSubState extends MusicBeatSubState {
 			
 				case "Restart":
 					FlxG.resetState();
+					Events.reload();
 
 				case "Botplay":
 					if (PlayState.instance != null)

@@ -123,6 +123,11 @@ class Paths {
 		return getPath('weeks/$key.json', TEXT, library);
 	}
 
+	inline static public function event(key:String, ?library:String) {
+		return getPath('events/$key.json', TEXT, library);
+	}
+
+
 	inline static public function video(key:String, ?library:String) {
 		return getPath('videos/$key.mp4', TEXT, library);
 	}
@@ -254,4 +259,6 @@ class Paths {
 	public static function formatSongName(s:String):String {
 		return s.toLowerCase().replace(" ", "-");
 	}
+
+	
 }

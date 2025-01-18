@@ -140,7 +140,7 @@ class Note extends FlxSprite
 	}
 
 	public function new(strumTime:Float = 0, noteData:Int = 0, isSustainNote:Bool = false, ?prevNote:Note, mustPress:Bool = false, pixelNote:Bool = false,
-			susnote:Float = 0, noteType:String = "hurt")
+			susnote:Float = 0, noteType:String = "")
 	{
 		super(0, -2000);
 

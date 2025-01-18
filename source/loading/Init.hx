@@ -1,5 +1,6 @@
 package loading;
 
+import editors.Events;
 import flixel.FlxG;
 import backend.AlsoftConfig.ALSoftConfig;
 import backend.WeekData;
@@ -12,6 +13,7 @@ class Init extends FlxState {
 		ALSoftConfig.init();
 		PlayerSettings.init();
 		Options.CheckDefaults();
+		Events.init();
 
 		FlxG.signals.gameResized.add(function(w, h) {
 			if (FlxG.cameras != null) {
@@ -27,8 +29,6 @@ class Init extends FlxState {
 				Main.resetSpriteCache(FlxG.game);
 		});
 
-	
 		FlxG.switchState(new Title());
-	
 	}
 }
