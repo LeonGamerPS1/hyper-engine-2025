@@ -1,5 +1,7 @@
 package modding;
 
+import modding.Song.SwagEvent;
+
 typedef SwagSection =
 {
 	var sectionNotes:Array<Dynamic>;
@@ -9,8 +11,8 @@ typedef SwagSection =
 	var bpm:Float;
 	var changeBPM:Bool;
 
+	@:optional var events:Array<SwagEvent>;
 	@:optional var altAnim:Bool;
-
 	@:optional var gfSection:Bool;
 }
 

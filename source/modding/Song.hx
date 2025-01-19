@@ -17,7 +17,6 @@ typedef SwagSong = {
 	var gfVersion:String;
 
 	var stage:String;
-	var events:Array<SwagEvent>;
 	var version:Null<String>;
 }
 
@@ -25,8 +24,9 @@ typedef SwagEvent = {
 	var name:String;
 	var time:Float;
 
-	var val1:String;
-	var val2:String;
+	
+	@:optional var val1:String;
+	@:optional var val2:String;
 }
 
 class Song {
