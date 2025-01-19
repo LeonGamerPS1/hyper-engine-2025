@@ -63,6 +63,31 @@ class Paths {
 		System.gc();
 	}
 
+	public static function clearAll() {
+		// clear non local assets in the tracked assets list
+		for (key in currentTrackedAssets.keys()) {
+			// if it is not currently contained within the used local assets
+
+			var obj = currentTrackedAssets.get(key);
+			@:privateAccess
+			if (obj != null) {
+				// remove the key from all cache maps
+				FlxG.bitmap._cache.remove(key);
+				openfl.Assets.cache.removeBitmapData(key);
+				currentTrackedAssets.remove(key);
+
+				// and get rid of the object
+				obj.persist = false; // make sure the garbage collector actually clears it up
+				obj.destroyOnNoUse = true;
+				obj.destroy();
+				obj = null;
+			}
+		}
+
+		// run the garbage collector for good measure lmfao
+		System.gc();
+	}
+
 	static public function cacheBitmap(file:String, ?bitmap:BitmapData = null, ?allowGPU:Bool = true) {
 		if (bitmap == null) {
 			if (OpenFlAssets.exists(file, IMAGE))
@@ -126,7 +151,6 @@ class Paths {
 	inline static public function event(key:String, ?library:String) {
 		return getPath('events/$key.json', TEXT, library);
 	}
-
 
 	inline static public function video(key:String, ?library:String) {
 		return getPath('videos/$key.mp4', TEXT, library);
@@ -239,12 +263,11 @@ class Paths {
 	public static inline function getFlxAnimatePath(key:String) {
 		return getPath('images/$key', TEXT);
 	}
-	
-	inline static public function newsvoices(key:String,variation:String = "") {
+
+	inline static public function newsvoices(key:String, variation:String = "") {
 		key = key.toLowerCase();
 		return getPath('songs/$key/Voices${variation != "" ? '-$variation' : ""}.ogg', SOUND);
 	}
-
 
 	#if sys
 	public static inline function getBytes(path:String):haxe.io.Bytes {
@@ -259,6 +282,4 @@ class Paths {
 	public static function formatSongName(s:String):String {
 		return s.toLowerCase().replace(" ", "-");
 	}
-
-	
 }

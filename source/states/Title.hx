@@ -62,7 +62,7 @@ class Title extends MusicBeatState {
 		add(Note);
 		Note.y  = receptor.y + 200;
 		//PlayState.SONG = Song.loadFromJson('tutorial', 'tutorial');
-		sustain = new Sustain(Note);
+		sustain = new Sustain(Note,Note.graphic,300);
 		add(sustain);
 	}
 

@@ -44,7 +44,7 @@ class ChartSustain extends FlxSprite {
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 		endPiece.y = y + height;
-		alpha = note.alpha;
+		alpha = 0.6;
 		endPiece.alpha = alpha;
 		x = note.x + (note.width / 3);
 		endPiece.x = x;

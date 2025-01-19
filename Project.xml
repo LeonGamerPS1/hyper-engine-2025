@@ -5,7 +5,8 @@
 
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin': Hyper Engine" file="hyper-funkin" main="Main" version="0.2.1" company="494kd" />
+	<app title="Friday Night Funkin': Hyper Engine" file="hyper-funkin" main="Main" version="0.2.1"
+		company="494kd" />
 
 	<!--The
 	flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a
@@ -36,13 +37,14 @@
 
 	<set name="BUILD_DIR" value="export/x86_64" unless="32bits web" />
 	<set name="BUILD_DIR" value="export/x86_32" if="32bits" unless="web" />
-	<set name="BUILD_DIR" value="export/other/" if="web"/>
+	<set name="BUILD_DIR" value="export/other/" if="web" />
 
 	<source path="source" />
-	<assets path="assets" />
+	<assets path="assets"/>
 
-	<!--____________Stinky Defines____________________-->
-    <haxedef  name="LUA_SYSTEM" if="cpp"/>
+	<!--____________Stinky
+	Defines____________________-->
+	<haxedef name="LUA_SYSTEM" if="cpp" />
 
 	<define name="hscriptPos" />
 	<!-- _______________________________ Libraries ______________________________ -->
@@ -52,12 +54,13 @@
 	<haxelib name="firetongue" />
 	<haxelib name="hscript" rename="hscript" />
 
-	<!--In case you want to use the addons package-->
+	<!--In
+	case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
 
 	<section if="desktop">
-		<assets path="root" rename=""/>
-	
+		<assets path="root" rename="" />
+
 	</section>
 
 	<haxelib name="hxluajit" if="cpp" />
@@ -66,7 +69,8 @@
 
 	<haxedef name="FLX_NO_HEALTH" />
 
-	<!--Optimise inputs, be careful you will get null errors if you don't use conditionals in your game-->
+	<!--Optimise
+	inputs, be careful you will get null errors if you don't use conditionals in your game-->
 	<haxedef name="FLX_NO_MOUSE" if="mobile" />
 	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
 	<haxedef name="FLX_NO_TOUCH" if="desktop" />

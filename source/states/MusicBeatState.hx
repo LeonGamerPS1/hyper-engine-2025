@@ -27,6 +27,7 @@ class MusicBeatState extends FunkinState {
 
 	override function update(elapsed:Float) {
 		// everyStep();
+
 		openfl.system.System.gc();
 		var oldStep:Int = curStep;
 		var oldSection:Int = totalSection;
@@ -43,6 +44,10 @@ class MusicBeatState extends FunkinState {
 			sectionHit();
 
 		super.update(elapsed);
+		if(FlxG.keys.justPressed.FIVE) {
+			PolymodHandler.forceReloadAssets();
+			FlxG.switchState(new Title());
+		}
 	}
 
 	private function updateBeat():Void {

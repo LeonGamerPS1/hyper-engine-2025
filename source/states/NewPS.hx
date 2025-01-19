@@ -20,6 +20,7 @@ class NewPS extends MusicBeatState {
 
 	override function create() {
 		super.create();
+		//var sus:Sustain = new Sustain(null,"assets/images/NOTE_assets",200);
 		oppStrums = new StrumLine();
 		Conductor.mapBPMChanges(song);
 		Conductor.changeBPM(song.bpm);

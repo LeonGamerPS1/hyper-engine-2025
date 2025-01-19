@@ -1,5 +1,8 @@
 package editors;
 
+import flixel.math.FlxRect;
+import flixel.FlxCamera;
+import openfl.Assets;
 import flixel.addons.effects.FlxTrail;
 import backend.Conductor.BPMChangeEvent;
 import flixel.FlxG;
@@ -79,6 +82,19 @@ class ChartEditorState extends MusicBeatState {
 	var ghost:FlxTrail;
 
 	public var events(default, null):Array<String> = Events.makeList();
+	public var metronome:Bool = false;
+
+	override function beatHit() {
+		super.beatHit();
+
+		leftIcon.scale.set(1.2, 1.2);
+		rightIcon.scale.set(1.2, 1.2);
+		leftIcon.updateHitbox();
+		rightIcon.updateHitbox();
+
+		if (lastFuck % 16 == 0)
+			camera.zoom = 1.03;
+	}
 
 	override function create() {
 		curSection = lastSection;
@@ -90,10 +106,19 @@ class ChartEditorState extends MusicBeatState {
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
 		add(gridBG);
 
+		var gridBG2 = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
+		gridBG2.y += GRID_SIZE * 16;
+		gridBG2.color = FlxColor.GRAY;
+		add(gridBG2);
+
 		leftIcon = new HealthIcon('bf');
 		rightIcon = new HealthIcon('dad');
-		leftIcon.scrollFactor.set(1, 1);
-		rightIcon.scrollFactor.set(1, 1);
+		rightIcon.y = FlxG.height - 200;
+		leftIcon.y = FlxG.height - 200;
+		leftIcon.x = 0;
+		rightIcon.x = FlxG.width - 200;
+		leftIcon.scrollFactor.set();
+		rightIcon.scrollFactor.set();
 
 		leftIcon.setGraphicSize(0, 45);
 		rightIcon.setGraphicSize(0, 45);
@@ -101,15 +126,19 @@ class ChartEditorState extends MusicBeatState {
 		add(leftIcon);
 		add(rightIcon);
 
-		leftIcon.setPosition(0, -100);
-		rightIcon.setPosition(gridBG.width / 2, -100);
-
-		var gridBlackLine:FlxSprite = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
+		var gridBlackLine:FlxSprite = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height * 2), FlxColor.BLACK);
 		add(gridBlackLine);
 
 		curRenderedNotes = new FlxTypedGroup<Note>();
 		curRenderedSustains = new FlxTypedGroup<ChartSustain>();
 		curRenderedEndSustains = new FlxTypedGroup<FlxSprite>();
+
+		fagCam = new FlxCamera(FlxG.width - 300, FlxG.height - 500, 200, Std.int(gridBG.height), 0.5);
+		FlxG.cameras.add(fagCam, false);
+		curRenderedNotes.cameras = curRenderedNotes.cameras.concat([fagCam]);
+		curRenderedSustains.cameras = curRenderedNotes.cameras;
+		curRenderedEndSustains.cameras = curRenderedNotes.cameras;
+
 		if (PlayState.SONG != null)
 			_song = PlayState.SONG;
 		else {
@@ -194,9 +223,9 @@ class ChartEditorState extends MusicBeatState {
 		addNoteUI();
 
 		add(curRenderedSustains);
-		add(curRenderedEndSustains);
 		add(rightStrums);
 		add(leftStrums);
+		add(curRenderedEndSustains);
 		add(curRenderedNotes);
 
 		changeSection();
@@ -220,7 +249,6 @@ class ChartEditorState extends MusicBeatState {
 
 		tab_group_events.add(evt_text);
 		tab_group_events.add(evtdropdown);
-		
 	}
 
 	function addSongUI():Void {
@@ -244,6 +272,12 @@ class ChartEditorState extends MusicBeatState {
 				vol = 0;
 
 			FlxG.sound.music.volume = vol;
+		};
+
+		var check_metronome = new FlxUICheckBox(10, 250, null, null, "Metronome", 100);
+		check_metronome.checked = false;
+		check_metronome.callback = function() {
+			metronome = check_metronome.checked;
 		};
 
 		var saveButton:FlxButton = new FlxButton(110, 8, "Save", function() {
@@ -288,6 +322,7 @@ class ChartEditorState extends MusicBeatState {
 
 		tab_group_song.add(check_voices);
 		tab_group_song.add(check_mute_inst);
+		tab_group_song.add(check_metronome);
 		tab_group_song.add(saveButton);
 		tab_group_song.add(reloadSong);
 		tab_group_song.add(reloadSongJson);
@@ -494,8 +529,16 @@ class ChartEditorState extends MusicBeatState {
 		return daPos;
 	}
 
+	var lastFuck:Int = 0;
+
 	override function update(elapsed:Float) {
 		curStep = recalculateSteps();
+
+		if (lastFuck != curStep) {
+			lastFuck = curStep;
+			if (lastFuck % 4 == 0)
+				beatHit();
+		}
 
 		Conductor.songPosition = FlxG.sound.music.time;
 		_song.song = typingShit.text;
@@ -521,6 +564,7 @@ class ChartEditorState extends MusicBeatState {
 		FlxG.watch.addQuick('daBeat', curBeat);
 		FlxG.watch.addQuick('daStep', curStep);
 
+		
 		curRenderedNotes.forEach(function(note:Note) {
 			if (note.strumTime <= Conductor.songPosition) {
 				if (!note.wasGoodHit) {
@@ -673,9 +717,23 @@ class ChartEditorState extends MusicBeatState {
 			+ " / "
 			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
 			+ "\nSection: "
-			+ curSection;
+			+ curSection
+			+ '\nStep: $curStep';
+
+		var mult:Float = FlxMath.lerp(1, leftIcon.scale.x, Math.exp(-elapsed * 8 * 1));
+		leftIcon.scale.set(mult, mult);
+		leftIcon.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(1, rightIcon.scale.x, Math.exp(-elapsed * 8 * 1));
+		rightIcon.scale.set(mult, mult);
+		rightIcon.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(1, camera.zoom, Math.exp(-elapsed * 8 * 1));
+		camera.zoom = mult;
 		super.update(elapsed);
 	}
+
+	public var fagCam:FlxCamera;
 
 	public inline function playStrumAnim(note:Note) {
 		var sl:StrumLine = !note.mustPress ? leftStrums : rightStrums;

@@ -1,4 +1,5 @@
 package modding;
+
 import backend.WeekData;
 import firetongue.FireTongue;
 import polymod.Polymod;
@@ -24,14 +25,14 @@ class PolymodHandler {
 		null
 		#end;
 
-	public static var loadedModIds:Array<String> = [];
+	public static var loadedMods:Array<ModMetadata> = [];
 
 	// Use SysZipFileSystem on desktop and MemoryZipFilesystem on web.
 	static var modFileSystem:Null<ZipFileSystem> = null;
 
 	public static function init(?framework:Null<Framework>) {
-		#if sys // fix for crash on sys platforms 
-		if(!sys.FileSystem.exists('./mods'))
+		#if sys // fix for crash on sys platforms
+		if (!sys.FileSystem.exists('./mods'))
 			sys.FileSystem.createDirectory('./mods');
 		#end
 		var dirs:Array<String> = [];
@@ -39,7 +40,7 @@ class PolymodHandler {
 		for (i in 0...polyMods.length) {
 			var value = polyMods[i];
 			dirs.push(value.modPath.split("./mods/")[1]);
-			loadedModIds.push(value.id);
+			loadedMods.push(value);
 		}
 		framework ??= FLIXEL;
 
@@ -54,7 +55,7 @@ class PolymodHandler {
 			errorCallback: PolymodErrorHandler.error,
 			firetongue: tongue
 		});
-		forceReloadAssets();
+		//forceReloadAssets();
 	}
 
 	public static function createModRoot():Void {
@@ -72,14 +73,23 @@ class PolymodHandler {
 		output.addType('hxc', TextFileFormat.PLAINTEXT);
 		output.addType('hx', TextFileFormat.PLAINTEXT);
 
-		// You can specify the format of a specific file, with file extension.
-		// output.addFile("data/introText.txt", TextFileFormat.LINES)
 		return output;
 	}
 
 	public static function forceReloadAssets():Void {
+		for (i in 0...loadedMods.length) {
+			var mod = loadedMods[i];
+			mod = null;
+			loadedMods.remove(mod);
+		}
+		loadedMods = [];
 		WeekData.reload();
+		Paths.clearAll();
 		Polymod.clearScripts();
 		Polymod.registerAllScriptClasses();
+		Polymod.reload();
+        init(FLIXEL);
+	
+	
 	}
 }
