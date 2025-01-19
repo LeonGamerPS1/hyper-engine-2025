@@ -13,6 +13,9 @@ class ModsMenu extends MusicBeatState {
 
 	public var items:FlxTypedGroup<Alphabet> = new FlxTypedGroup<Alphabet>();
 	public var curSel:Int = 0;
+	public var descriptions:Array<String> = [];
+	public var box:FlxSprite;
+	public var text:FlxText;
 
 	override function create() {
 		super.create();
@@ -21,6 +24,10 @@ class ModsMenu extends MusicBeatState {
 
 		add(mods);
 		add(items);
+
+		box = new FlxSprite(50,0).makeGraphic(Std.int(FlxG.width * 0.9),50,FlxColor.BLACK);
+		box.alpha = 0.7;
+		add(box);
 
 		if (PolymodHandler.loadedMods.length > 0)
 			doLoadedModsCreate();
@@ -48,6 +55,8 @@ class ModsMenu extends MusicBeatState {
 			modIcon.setGraphicSize(150, 150);
 			modIcon.updateHitbox();
 			mods.add(modIcon);
+
+			descriptions.push(value.description);
 		}
 	}
 

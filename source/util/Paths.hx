@@ -39,84 +39,13 @@ class Paths {
 
 	public static function clearUnusedMemory() {
 		// clear non local assets in the tracked assets list
-		for (key in currentTrackedAssets.keys()) {
-			// if it is not currently contained within the used local assets
-			if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key)) {
-				var obj = currentTrackedAssets.get(key);
-				@:privateAccess
-				if (obj != null) {
-					// remove the key from all cache maps
-					FlxG.bitmap._cache.remove(key);
-					openfl.Assets.cache.removeBitmapData(key);
-					currentTrackedAssets.remove(key);
 
-					// and get rid of the object
-					obj.persist = false; // make sure the garbage collector actually clears it up
-					obj.destroyOnNoUse = true;
-					obj.destroy();
-					obj = null;
-				}
-			}
-		}
-
-		// run the garbage collector for good measure lmfao
 		System.gc();
 	}
 
 	public static function clearAll() {
-		// clear non local assets in the tracked assets list
-		for (key in currentTrackedAssets.keys()) {
-			// if it is not currently contained within the used local assets
-
-			var obj = currentTrackedAssets.get(key);
-			@:privateAccess
-			if (obj != null) {
-				// remove the key from all cache maps
-				FlxG.bitmap._cache.remove(key);
-				openfl.Assets.cache.removeBitmapData(key);
-				currentTrackedAssets.remove(key);
-
-				// and get rid of the object
-				obj.persist = false; // make sure the garbage collector actually clears it up
-				obj.destroyOnNoUse = true;
-				obj.destroy();
-				obj = null;
-			}
-		}
-
 		// run the garbage collector for good measure lmfao
 		System.gc();
-	}
-
-	static public function cacheBitmap(file:String, ?bitmap:BitmapData = null, ?allowGPU:Bool = true) {
-		if (bitmap == null) {
-			if (OpenFlAssets.exists(file, IMAGE))
-				bitmap = OpenFlAssets.getBitmapData(file);
-
-			if (bitmap == null)
-				return null;
-		}
-
-		localTrackedAssets.push(file);
-		if (allowGPU) {
-			var texture:RectangleTexture = FlxG.stage.context3D.createRectangleTexture(bitmap.width, bitmap.height, BGRA, true);
-			texture.uploadFromBitmapData(bitmap);
-			bitmap.image.data = null;
-			bitmap.dispose();
-			bitmap.disposeImage();
-			bitmap = BitmapData.fromTexture(texture);
-		}
-		var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, file);
-		newGraphic.persist = true;
-		newGraphic.bitmap.disposeImage();
-		newGraphic.destroyOnNoUse = false;
-		currentTrackedAssets.set(file, newGraphic);
-		return newGraphic;
-	}
-
-	public static function excludeAsset(key:String) {
-		if (!dumpExclusions.contains(key))
-			dumpExclusions.push(key);
 	}
 
 	static public function getLibraryPath(file:String, library = "preload") {
@@ -226,28 +155,7 @@ class Paths {
 	}
 
 	static public function image(key:String, ?library:String, ?allowGPU:Bool = true) {
-		#if (desktop && !hl)
-		var bitmap:BitmapData = null;
-		var file:String = null;
-
-		file = getPath('images/$key.png', IMAGE, library);
-		if (currentTrackedAssets.exists(file)) {
-			localTrackedAssets.push(file);
-			return currentTrackedAssets.get(file);
-		} else if (OpenFlAssets.exists(file, IMAGE))
-			bitmap = OpenFlAssets.getBitmapData(file);
-
-		if (bitmap != null) {
-			var retVal = cacheBitmap(file, bitmap, allowGPU);
-			if (retVal != null)
-				return retVal;
-		}
-
-		trace('oh no its returning null NOOOO ($file)');
-		return null;
-		#else
 		return img(key, library != null ? library : null);
-		#end
 	}
 
 	public static inline function getSparrowAtlas(key:String) {
